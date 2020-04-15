@@ -1,6 +1,7 @@
 package com.wws.myrpc.server;
 
 import com.wws.myrpc.core.handler.ProtocolDecoder;
+import com.wws.myrpc.core.handler.ProtocolEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -9,11 +10,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class Server {
 
-    ServerBootstrap serverBootstrap;
-    NioEventLoopGroup bossGroup;
-    NioEventLoopGroup workerGroup;
+    private ServerBootstrap serverBootstrap;
+    private NioEventLoopGroup bossGroup;
+    private NioEventLoopGroup workerGroup;
 
-    int port;
+    private int port;
 
     public Server(int port) {
         serverBootstrap = new ServerBootstrap();
@@ -25,6 +26,7 @@ public class Server {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         socketChannel.pipeline().addLast(new ProtocolDecoder());
+                        socketChannel.pipeline().addLast(new ProtocolEncoder());
                     }
                 });
         this.port = port;
