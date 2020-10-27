@@ -11,7 +11,7 @@ import java.util.List;
 public class ProtocolDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-
+        System.out.println("decode .....");
         byteBuf.markReaderIndex();
 
         Protocol protocol = new Protocol();

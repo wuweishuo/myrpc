@@ -28,4 +28,20 @@ public class Protocol implements Codec {
         header.write(byteBuf);
         byteBuf.writeBytes(body);
     }
+
+    public Header getHeader() {
+        return header;
+    }
+
+    public void setHeader(Header header) {
+        this.header = header;
+    }
+
+    public byte[] getBody() {
+        return body;
+    }
+
+    public void setBody(byte[] body) {
+        this.body = body;
+    }
 }

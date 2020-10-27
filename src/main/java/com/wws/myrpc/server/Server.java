@@ -2,6 +2,8 @@ package com.wws.myrpc.server;
 
 import com.wws.myrpc.core.handler.ProtocolDecoder;
 import com.wws.myrpc.core.handler.ProtocolEncoder;
+import com.wws.myrpc.server.handler.ServiceInvokeHandler;
+import com.wws.myrpc.server.locator.ServiceLocator;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -26,6 +28,7 @@ public class Server {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         socketChannel.pipeline().addLast(new ProtocolDecoder());
+                        socketChannel.pipeline().addLast(new ServiceInvokeHandler());
                         socketChannel.pipeline().addLast(new ProtocolEncoder());
                     }
                 });
@@ -34,6 +37,7 @@ public class Server {
 
     public void start() throws InterruptedException {
         serverBootstrap.bind(port).sync();
+        System.out.println("server listen in "+ port + "......");
     }
 
     public void shutdown() {
@@ -43,6 +47,11 @@ public class Server {
         if (workerGroup != null) {
             workerGroup.shutdownGracefully();
         }
+    }
+
+
+    public void registerService(Class clazz, Object service){
+        ServiceLocator.INS.register(clazz, service);
     }
 
 }
