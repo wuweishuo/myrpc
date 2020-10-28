@@ -1,7 +1,8 @@
 package com.wws.myrpc.client.handler;
 
 import com.wws.myrpc.client.callback.CallbackContext;
-import com.wws.myrpc.client.callback.CallbackPool;
+import com.wws.myrpc.client.callback.CallbackContextMap;
+import com.wws.myrpc.client.constance.AttributeKeyConst;
 import com.wws.myrpc.core.protocol.Header;
 import com.wws.myrpc.core.protocol.Protocol;
 import com.wws.myrpc.serialization.JdkSerializer;
@@ -20,7 +21,8 @@ public class ServiceReturnHandler extends SimpleChannelInboundHandler<Protocol> 
         System.out.println("service return ......");
         Header header = protocol.getHeader();
         long flowId = header.getFlowId();
-        CallbackContext callbackContext = CallbackPool.INS.get(flowId);
+        CallbackContextMap callbackContextMap = channelHandlerContext.channel().attr(AttributeKeyConst.CALLBACK_CONTEXT_MAP_ATTRIBUTE_KEY).get();
+        CallbackContext callbackContext = callbackContextMap.get(flowId);
         Type returnType = callbackContext.getReturnType();
         Type[] returnTypes = {returnType};
         try {
@@ -29,5 +31,6 @@ public class ServiceReturnHandler extends SimpleChannelInboundHandler<Protocol> 
         }catch (Throwable e){
             callbackContext.getCallbackFuture().setError(e);
         }
+        callbackContextMap.remove(flowId);
     }
 }
