@@ -5,8 +5,9 @@ import com.wws.myrpc.client.callback.CallbackContextMap;
 import com.wws.myrpc.client.constance.AttributeKeyConst;
 import com.wws.myrpc.core.protocol.Header;
 import com.wws.myrpc.core.protocol.Protocol;
-import com.wws.myrpc.serialization.JdkSerializer;
-import com.wws.myrpc.serialization.Serializer;
+import com.wws.myrpc.core.protocol.Response;
+import com.wws.myrpc.serialize.Serializer;
+import com.wws.myrpc.serialize.impl.JdkSerializer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -25,12 +26,12 @@ public class ServiceReturnHandler extends SimpleChannelInboundHandler<Protocol> 
         CallbackContext callbackContext = callbackContextMap.get(flowId);
         Type returnType = callbackContext.getReturnType();
         Type[] returnTypes = {returnType};
-        try {
-            Object[] obj = serializer.deserialize(returnTypes, protocol.getBody());
-            callbackContext.getCallbackFuture().setResult(obj[0]);
-        }catch (Throwable e){
-            callbackContext.getCallbackFuture().setError(e);
+        Response response = serializer.deserialize(protocol.getBody(), Response.class);
+        Throwable exception = response.getException();
+        if(exception != null){
+            callbackContext.getCallbackFuture().setError(exception);
         }
+        callbackContext.getCallbackFuture().setResult(response.getResult());
         callbackContextMap.remove(flowId);
     }
 }

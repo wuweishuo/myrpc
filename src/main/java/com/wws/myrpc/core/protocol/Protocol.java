@@ -26,7 +26,9 @@ public class Protocol implements Codec {
     @Override
     public void write(ByteBuf byteBuf) {
         header.write(byteBuf);
-        byteBuf.writeBytes(body);
+        if(body != null) {
+            byteBuf.writeBytes(body);
+        }
     }
 
     public Header getHeader() {

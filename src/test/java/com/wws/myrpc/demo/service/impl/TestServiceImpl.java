@@ -1,6 +1,6 @@
-package com.wws.myrpc.service.impl;
+package com.wws.myrpc.demo.service.impl;
 
-import com.wws.myrpc.service.TestService;
+import com.wws.myrpc.demo.service.TestService;
 
 public class TestServiceImpl implements TestService {
     @Override

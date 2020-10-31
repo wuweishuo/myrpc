@@ -5,12 +5,14 @@ import com.wws.myrpc.client.callback.CallbackContextMap;
 import com.wws.myrpc.client.callback.CallbackFuture;
 import com.wws.myrpc.client.constance.AttributeKeyConst;
 import com.wws.myrpc.client.handler.ServiceReturnHandler;
+import com.wws.myrpc.core.exception.RpcException;
 import com.wws.myrpc.core.handler.ProtocolDecoder;
 import com.wws.myrpc.core.handler.ProtocolEncoder;
 import com.wws.myrpc.core.protocol.Header;
 import com.wws.myrpc.core.protocol.Protocol;
-import com.wws.myrpc.serialization.JdkSerializer;
-import com.wws.myrpc.serialization.Serializer;
+import com.wws.myrpc.core.protocol.Request;
+import com.wws.myrpc.serialize.Serializer;
+import com.wws.myrpc.serialize.impl.JdkSerializer;
 import com.wws.myrpc.util.impl.UUIdGenerator;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -64,24 +66,31 @@ public class Client {
 
     }
 
-    public <T> T transport(Method method, Object[] args) throws InterruptedException, ExecutionException, IOException {
+    public <T> T transport(Method method, Class<T> returnType, Object... args) throws Throwable {
         Channel channel = this.connect();
-        long flowId = doTransport(channel, method, args);
+
+        Request request = new Request();
+        request.setMethod(method.toGenericString());
+        request.setArgs(args);
+        long flowId = doTransport(channel, request);
+
         CallbackFuture<T> callbackFuture = new CallbackFuture<>();
         CallbackContextMap callbackContextMap = channel.attr(AttributeKeyConst.CALLBACK_CONTEXT_MAP_ATTRIBUTE_KEY).get();
-        callbackContextMap.put(flowId, new CallbackContext(callbackFuture, method.getGenericReturnType()));
-        return callbackFuture.get();
+        callbackContextMap.put(flowId, new CallbackContext(callbackFuture, returnType));
+        try {
+            return callbackFuture.get();
+        } catch (ExecutionException e) {
+            throw new RpcException(e.getCause().getMessage());
+        }
+
     }
 
-    private long doTransport(Channel channel, Method method, Object[] args) throws IOException {
-        Type[] parameterTypes = method.getGenericParameterTypes();
-        byte[] bytes = serializer.serialize(parameterTypes, args);
+    private long doTransport(Channel channel, Request request) throws IOException {
+        byte[] bytes = serializer.serialize(request);
         Header header = new Header();
-        header.setBodyLen(bytes.length);
-        header.setMethod(method.toGenericString());
         long flowId = channel.attr(AttributeKeyConst.ID_GENERATOR_ATTRIBUTE_KEY).get().generate();
         header.setFlowId(flowId);
-        header.setAid(1L);
+        header.setBodyLen(bytes.length);
         Protocol protocol = new Protocol();
         protocol.setHeader(header);
         protocol.setBody(bytes);
