@@ -11,8 +11,6 @@ import com.wws.myrpc.serialize.impl.JdkSerializer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-import java.lang.reflect.Type;
-
 public class ServiceReturnHandler extends SimpleChannelInboundHandler<Protocol> {
 
     private final Serializer serializer = new JdkSerializer();
@@ -24,8 +22,6 @@ public class ServiceReturnHandler extends SimpleChannelInboundHandler<Protocol> 
         long flowId = header.getFlowId();
         CallbackContextMap callbackContextMap = channelHandlerContext.channel().attr(AttributeKeyConst.CALLBACK_CONTEXT_MAP_ATTRIBUTE_KEY).get();
         CallbackContext callbackContext = callbackContextMap.get(flowId);
-        Type returnType = callbackContext.getReturnType();
-        Type[] returnTypes = {returnType};
         Response response = serializer.deserialize(protocol.getBody(), Response.class);
         Throwable exception = response.getException();
         if(exception != null){
@@ -34,4 +30,6 @@ public class ServiceReturnHandler extends SimpleChannelInboundHandler<Protocol> 
         callbackContext.getCallbackFuture().setResult(response.getResult());
         callbackContextMap.remove(flowId);
     }
+
+
 }

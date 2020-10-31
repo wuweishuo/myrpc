@@ -8,6 +8,7 @@ import com.wws.myrpc.core.protocol.Request;
 import com.wws.myrpc.core.protocol.Response;
 import com.wws.myrpc.serialize.Serializer;
 import com.wws.myrpc.serialize.impl.JdkSerializer;
+import com.wws.myrpc.server.RequestContext;
 import com.wws.myrpc.server.locator.ServiceDescriptor;
 import com.wws.myrpc.server.locator.ServiceLocator;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,6 +26,7 @@ public class ServiceInvokeHandler extends SimpleChannelInboundHandler<Protocol> 
         System.out.println("service invoking ....");
         // 反序列化request
         Header header = protocol.getHeader();
+        RequestContext.set(new RequestContext(header.getVersion(), header.getFlowId()));
 
         Request request = serializer.deserialize(protocol.getBody(), Request.class);
         String methodName = request.getMethod();
@@ -42,10 +44,10 @@ public class ServiceInvokeHandler extends SimpleChannelInboundHandler<Protocol> 
             } catch (InvocationTargetException e) {
                 Throwable cause = e.getCause();
                 cause.printStackTrace();
-                response.setException(new RpcException(cause.getMessage()));
+                response.setException(cause);
             } catch (Throwable e){
                 e.printStackTrace();
-                response.setException(new RpcException(e.getMessage()));
+                response.setException(e);
             }
         }
 
@@ -58,6 +60,26 @@ public class ServiceInvokeHandler extends SimpleChannelInboundHandler<Protocol> 
             retProtocol.setBody(bytes);
         }
         channelHandlerContext.channel().writeAndFlush(retProtocol);
+
+        RequestContext.clear();
     }
 
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        RequestContext requestContext = RequestContext.get();
+
+        Protocol protocol = new Protocol();
+        Response response = new Response();
+        response.setException(cause);
+        byte[] bytes = serializer.serialize(response);
+        protocol.setBody(bytes);
+
+        Header header = new Header();
+        header.setFlowId(requestContext.getFlowId());
+        header.setBodyLen(bytes.length);
+        protocol.setHeader(header);
+
+        cause.printStackTrace();
+        ctx.channel().writeAndFlush(protocol);
+    }
 }

@@ -80,7 +80,7 @@ public class Client {
         try {
             return callbackFuture.get();
         } catch (ExecutionException e) {
-            throw new RpcException(e.getCause().getMessage());
+            throw new RpcException(e.getCause());
         }
 
     }
