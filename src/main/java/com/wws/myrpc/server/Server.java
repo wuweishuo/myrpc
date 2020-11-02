@@ -2,21 +2,26 @@ package com.wws.myrpc.server;
 
 import com.wws.myrpc.core.handler.ProtocolDecoder;
 import com.wws.myrpc.core.handler.ProtocolEncoder;
-import com.wws.myrpc.server.handler.ServiceInvokeHandler;
+import com.wws.myrpc.server.handler.ServerHandler;
 import com.wws.myrpc.server.locator.ServiceLocator;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
+
+import java.util.concurrent.TimeUnit;
 
 public class Server {
 
-    private ServerBootstrap serverBootstrap;
-    private NioEventLoopGroup bossGroup;
-    private NioEventLoopGroup workerGroup;
+    private final ServerBootstrap serverBootstrap;
+    private final NioEventLoopGroup bossGroup;
+    private final NioEventLoopGroup workerGroup;
 
-    private int port;
+    private final int port;
+
+    private static final int IDLE_TIMEOUT = 3;
 
     public Server(int port) {
         serverBootstrap = new ServerBootstrap();
@@ -27,9 +32,11 @@ public class Server {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline().addLast(new ProtocolDecoder());
-                        socketChannel.pipeline().addLast(new ServiceInvokeHandler());
-                        socketChannel.pipeline().addLast(new ProtocolEncoder());
+                        socketChannel.pipeline()
+                                .addLast(new IdleStateHandler(0, 0, IDLE_TIMEOUT))
+                                .addLast(new ProtocolDecoder())
+                                .addLast(new ServerHandler())
+                                .addLast(new ProtocolEncoder());
                     }
                 });
         this.port = port;
@@ -37,7 +44,7 @@ public class Server {
 
     public void start() throws InterruptedException {
         serverBootstrap.bind(port).sync();
-        System.out.println("server listen in "+ port + "......");
+        System.out.println("server listen in " + port + "......");
     }
 
     public void shutdown() {
@@ -50,7 +57,7 @@ public class Server {
     }
 
 
-    public void registerService(Class clazz, Object service){
+    public void registerService(Class clazz, Object service) {
         ServiceLocator.INS.register(clazz, service);
     }
 

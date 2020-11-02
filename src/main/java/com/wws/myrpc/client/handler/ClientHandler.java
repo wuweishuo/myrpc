@@ -10,8 +10,9 @@ import com.wws.myrpc.serialize.Serializer;
 import com.wws.myrpc.serialize.impl.JdkSerializer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleStateEvent;
 
-public class ServiceReturnHandler extends SimpleChannelInboundHandler<Protocol> {
+public class ClientHandler extends SimpleChannelInboundHandler<Protocol> {
 
     private final Serializer serializer = new JdkSerializer();
 
@@ -31,5 +32,15 @@ public class ServiceReturnHandler extends SimpleChannelInboundHandler<Protocol> 
         callbackContextMap.remove(flowId);
     }
 
-
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if(evt instanceof IdleStateEvent){
+            Protocol protocol = new Protocol();
+            Header header = new Header();
+            header.setFlowId(ctx.channel().attr(AttributeKeyConst.ID_GENERATOR_ATTRIBUTE_KEY).get().generate());
+            protocol.setHeader(header);
+            ctx.writeAndFlush(protocol);
+        }
+        super.userEventTriggered(ctx, evt);
+    }
 }

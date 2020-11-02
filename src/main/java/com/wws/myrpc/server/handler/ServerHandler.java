@@ -1,6 +1,5 @@
 package com.wws.myrpc.server.handler;
 
-import com.wws.myrpc.core.exception.RpcException;
 import com.wws.myrpc.core.exception.ServiceNotFoundException;
 import com.wws.myrpc.core.protocol.Header;
 import com.wws.myrpc.core.protocol.Protocol;
@@ -13,11 +12,12 @@ import com.wws.myrpc.server.locator.ServiceDescriptor;
 import com.wws.myrpc.server.locator.ServiceLocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleStateEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ServiceInvokeHandler extends SimpleChannelInboundHandler<Protocol> {
+public class ServerHandler extends SimpleChannelInboundHandler<Protocol> {
 
     private final Serializer serializer = new JdkSerializer();
 
@@ -26,8 +26,13 @@ public class ServiceInvokeHandler extends SimpleChannelInboundHandler<Protocol> 
         System.out.println("service invoking ....");
         // 反序列化request
         Header header = protocol.getHeader();
-        RequestContext.set(new RequestContext(header.getVersion(), header.getFlowId()));
 
+        //心跳不处理
+        if(header.getBodyLen() == 0){
+            return;
+        }
+
+        RequestContext.set(new RequestContext(header.getVersion(), header.getFlowId()));
         Request request = serializer.deserialize(protocol.getBody(), Request.class);
         String methodName = request.getMethod();
         ServiceDescriptor serviceDescriptor = ServiceLocator.INS.get(methodName);
@@ -35,9 +40,9 @@ public class ServiceInvokeHandler extends SimpleChannelInboundHandler<Protocol> 
         // 服务调用
         Response response = new Response();
         Method method = serviceDescriptor.getMethod();
-        if(method == null){
+        if (method == null) {
             response.setException(new ServiceNotFoundException(methodName));
-        }else {
+        } else {
             try {
                 Object returnObj = method.invoke(serviceDescriptor.getTarget(), request.getArgs());
                 response.setResult(returnObj);
@@ -45,7 +50,7 @@ public class ServiceInvokeHandler extends SimpleChannelInboundHandler<Protocol> 
                 Throwable cause = e.getCause();
                 cause.printStackTrace();
                 response.setException(cause);
-            } catch (Throwable e){
+            } catch (Throwable e) {
                 e.printStackTrace();
                 response.setException(e);
             }
@@ -55,7 +60,7 @@ public class ServiceInvokeHandler extends SimpleChannelInboundHandler<Protocol> 
         Protocol retProtocol = new Protocol();
         retProtocol.setHeader(header);
         byte[] bytes = serializer.serialize(response);
-        if(bytes != null) {
+        if (bytes != null) {
             header.setBodyLen(bytes.length);
             retProtocol.setBody(bytes);
         }
@@ -67,19 +72,30 @@ public class ServiceInvokeHandler extends SimpleChannelInboundHandler<Protocol> 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         RequestContext requestContext = RequestContext.get();
+        if(requestContext != null) {
+            Protocol protocol = new Protocol();
+            Response response = new Response();
+            response.setException(cause);
+            byte[] bytes = serializer.serialize(response);
+            protocol.setBody(bytes);
 
-        Protocol protocol = new Protocol();
-        Response response = new Response();
-        response.setException(cause);
-        byte[] bytes = serializer.serialize(response);
-        protocol.setBody(bytes);
+            Header header = new Header();
+            header.setFlowId(requestContext.getFlowId());
+            header.setBodyLen(bytes.length);
+            protocol.setHeader(header);
 
-        Header header = new Header();
-        header.setFlowId(requestContext.getFlowId());
-        header.setBodyLen(bytes.length);
-        protocol.setHeader(header);
+            cause.printStackTrace();
+            ctx.channel().writeAndFlush(protocol);
+        }else{
+            super.exceptionCaught(ctx, cause);
+        }
+    }
 
-        cause.printStackTrace();
-        ctx.channel().writeAndFlush(protocol);
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            ctx.close();
+        }
+        super.userEventTriggered(ctx, evt);
     }
 }

@@ -4,7 +4,7 @@ import com.wws.myrpc.client.callback.CallbackContext;
 import com.wws.myrpc.client.callback.CallbackContextMap;
 import com.wws.myrpc.client.callback.CallbackFuture;
 import com.wws.myrpc.client.constance.AttributeKeyConst;
-import com.wws.myrpc.client.handler.ServiceReturnHandler;
+import com.wws.myrpc.client.handler.ClientHandler;
 import com.wws.myrpc.core.exception.RpcException;
 import com.wws.myrpc.core.handler.ProtocolDecoder;
 import com.wws.myrpc.core.handler.ProtocolEncoder;
@@ -21,22 +21,24 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.concurrent.ExecutionException;
 
 public class Client {
 
-    private String ip;
+    private final String ip;
 
-    private int port;
+    private final int port;
 
-    private Bootstrap bootstrap;
-    private NioEventLoopGroup workerGroup;
+    private final Bootstrap bootstrap;
+    private final NioEventLoopGroup workerGroup;
 
-    private Serializer serializer = new JdkSerializer();
+    private final int HEART_BEAT = 1;
+
+    private final Serializer serializer = new JdkSerializer();
 
     public Client(String ip, int port) {
         this.ip = ip;
@@ -49,16 +51,18 @@ public class Client {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline().addLast(new ProtocolDecoder());
-                        socketChannel.pipeline().addLast(new ServiceReturnHandler());
-                        socketChannel.pipeline().addLast(new ProtocolEncoder());
+                        socketChannel.pipeline()
+                                .addLast(new IdleStateHandler(0, HEART_BEAT, 0))
+                                .addLast(new ProtocolDecoder())
+                                .addLast(new ClientHandler())
+                                .addLast(new ProtocolEncoder());
                     }
                 });
     }
 
     public Channel connect() throws InterruptedException {
         ChannelFuture channelFuture = bootstrap.connect(ip, port).sync();
-        System.out.println("client connect to "+ ip +":" + port);
+        System.out.println("client connect to " + ip + ":" + port);
         Channel channel = channelFuture.channel();
         channel.attr(AttributeKeyConst.CALLBACK_CONTEXT_MAP_ATTRIBUTE_KEY).set(new CallbackContextMap());
         channel.attr(AttributeKeyConst.ID_GENERATOR_ATTRIBUTE_KEY).set(new UUIdGenerator());

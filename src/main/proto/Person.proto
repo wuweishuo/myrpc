@@ -1,7 +1,0 @@
-syntax="proto3";
-option java_package = "com.wws.myrpc.protobuf.quickstart";
-option java_outer_classname = "PersonProtobuf";
-message Person  {
-    int32 age = 1;
-    string name = 2;
-}
