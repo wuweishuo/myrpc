@@ -3,6 +3,7 @@ package com.wws.myrpc.serialize.impl;
 import com.wws.myrpc.domain.User;
 import com.wws.myrpc.serialize.Serializer;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,6 +13,7 @@ public class JdkSerializerTest extends TestCase {
 
     private Serializer serializer = new JdkSerializer();
 
+    @Test
     public void testDeserialize() throws IOException, ClassNotFoundException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         serializer.serialize(out, null);

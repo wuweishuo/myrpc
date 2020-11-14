@@ -8,8 +8,8 @@
         <module>myrpc-server</module>
         <module>myrpc-common</module>
         <module>myrpc-serialize</module>
-        <module>myrpc-test</module>
         <module>myrpc-all</module>
+        <module>myrpc-spring</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

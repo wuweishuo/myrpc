@@ -9,7 +9,7 @@ public class ReflectionUtil {
 
     public static Method[] getAllInstanceMethods(Class clazz){
         if(clazz == null || !Modifier.isInterface(clazz.getModifiers())){
-            return null;
+            return new Method[0];
         }
         List<Method> list = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {

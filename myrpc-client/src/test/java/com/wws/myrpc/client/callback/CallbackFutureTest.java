@@ -1,11 +1,12 @@
 package com.wws.myrpc.client.callback;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.util.concurrent.ExecutionException;
 
-public class CallbackFutureTest extends TestCase {
+public class CallbackFutureTest {
 
+    @Test(expected = Exception.class)
     public void testGet() throws ExecutionException, InterruptedException {
         CallbackFuture callbackFuture = new CallbackFuture();
         callbackFuture.setResult("test");
