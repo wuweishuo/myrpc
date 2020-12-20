@@ -2,6 +2,6 @@ package com.wws.myrpc.client;
 
 import com.wws.myrpc.service.UserService;
 
-@RpcClient(ip = "127.0.0.1", port = 9000)
+@RpcClient(name = "user-service", registerUrl = "127.0.0.1:2181")
 public interface UserClient extends UserService {
 }

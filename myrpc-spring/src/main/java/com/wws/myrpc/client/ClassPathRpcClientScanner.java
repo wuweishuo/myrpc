@@ -40,9 +40,11 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
             String ip = (String) annotationAttributes.get("ip");
             Integer port = (Integer) annotationAttributes.get("port");
             String name = (String) annotationAttributes.get("name");
+            String registerUrl = (String) annotationAttributes.get("registerUrl");
             beanDefinition.getPropertyValues().add("ip", ip);
             beanDefinition.getPropertyValues().add("port", port);
-//            beanDefinition.getPropertyValues().add("name", name);
+            beanDefinition.getPropertyValues().add("name", name);
+            beanDefinition.getPropertyValues().add("registerUrl", registerUrl);
             beanDefinition.getPropertyValues().add("clientClass", beanDefinition.getBeanClassName());
             beanDefinition.getPropertyValues().add("proxyFactory", new RuntimeBeanReference("rpcClientProxyFactory"));
             beanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);

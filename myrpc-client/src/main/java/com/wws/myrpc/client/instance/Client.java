@@ -1,10 +1,11 @@
-package com.wws.myrpc.client;
+package com.wws.myrpc.client.instance;
 
-import com.wws.myrpc.client.callback.CallbackContext;
-import com.wws.myrpc.client.callback.CallbackContextMap;
-import com.wws.myrpc.client.callback.CallbackFuture;
-import com.wws.myrpc.client.constance.AttributeKeyConst;
-import com.wws.myrpc.client.handler.ClientHandler;
+import com.wws.myrpc.client.IClient;
+import com.wws.myrpc.client.instance.callback.CallbackContext;
+import com.wws.myrpc.client.instance.callback.CallbackContextMap;
+import com.wws.myrpc.client.instance.callback.CallbackFuture;
+import com.wws.myrpc.client.instance.constance.AttributeKeyConst;
+import com.wws.myrpc.client.instance.handler.ClientHandler;
 import com.wws.myrpc.core.exception.RpcException;
 import com.wws.myrpc.core.handler.ProtocolDecoder;
 import com.wws.myrpc.core.handler.ProtocolEncoder;
@@ -27,7 +28,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.concurrent.ExecutionException;
 
-public class Client {
+public class Client implements IClient {
 
     private final String ip;
 

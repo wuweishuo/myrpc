@@ -40,6 +40,5 @@ public class RpcClientScannerRegistrar implements ImportBeanDefinitionRegistrar 
 
         scanner.registerFilters();
         scanner.doScan(StringUtils.toStringArray(basePackages));
-        System.out.println(registry.getBeanDefinition("userClient"));
     }
 }

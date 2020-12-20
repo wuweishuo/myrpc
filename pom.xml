@@ -17,6 +17,7 @@
         <module>myrpc-serialize</module>
         <module>myrpc-all</module>
         <module>myrpc-spring</module>
+        <module>myrpc-registry</module>
     </modules>
 
     <properties>
@@ -62,6 +63,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot</artifactId>
                 <version>${spring.boot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wws</groupId>
+                <artifactId>myrpc-registry-api</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

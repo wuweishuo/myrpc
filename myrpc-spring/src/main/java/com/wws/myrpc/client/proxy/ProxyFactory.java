@@ -1,9 +1,9 @@
 package com.wws.myrpc.client.proxy;
 
-import com.wws.myrpc.client.Client;
+import com.wws.myrpc.client.IClient;
 
 public interface ProxyFactory {
 
-    <T> T getProxy(Client client, Class<T> clazz);
+    <T> T getProxy(IClient client, Class<T> clazz);
 
 }

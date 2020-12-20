@@ -1,6 +1,9 @@
 myrpc:
   server:
     port: 9000
+    register: true
+    name: user-service
+    registerUri: 127.0.0.1:2181
 
 server:
   port: 8081

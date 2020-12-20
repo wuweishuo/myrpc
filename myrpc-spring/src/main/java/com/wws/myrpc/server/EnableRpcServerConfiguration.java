@@ -8,15 +8,20 @@ public class EnableRpcServerConfiguration {
 
     @Bean
     public Server server(RpcServerProperties rpcServerProperties){
-        Integer port = rpcServerProperties.getPort();
-        Server server = new Server(port);
         try {
+            Server server;
+            if(rpcServerProperties.getRegister()){
+                server = new Server(rpcServerProperties.getPort(), rpcServerProperties.getName(), rpcServerProperties.getRegister(), rpcServerProperties.getRegisterUri());
+            }else {
+                Integer port = rpcServerProperties.getPort();
+                server = new Server(port);
+            }
             server.start();
-        } catch (InterruptedException e) {
+            return server;
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        return server;
     }
 
 }

@@ -13,4 +13,6 @@ public @interface RpcClient {
 
     String name() default "";
 
+    String registerUrl() default "";
+
 }

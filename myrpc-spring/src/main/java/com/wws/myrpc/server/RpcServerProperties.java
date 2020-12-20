@@ -7,6 +7,10 @@ public class RpcServerProperties {
 
     private Integer port;
 
+    private boolean register;
+
+    private String name;
+
     private String registerUri;
 
     public Integer getPort() {
@@ -23,5 +27,21 @@ public class RpcServerProperties {
 
     public void setRegisterUri(String registerUri) {
         this.registerUri = registerUri;
+    }
+
+    public boolean getRegister() {
+        return register;
+    }
+
+    public void setRegister(boolean register) {
+        this.register = register;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

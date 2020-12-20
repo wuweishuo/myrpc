@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class ServerTest extends TestCase {
 
-    public void testRegisterService() {
+    public void testRegisterService() throws Exception {
         Server server = new Server(8000);
         server.registerService(TestService.class, new TestServiceImpl());
         ServiceDescriptor serviceDescriptor = ServiceLocator.INS.get("public abstract java.lang.String com.wws.myrpc.demo.service.TestService.hello(java.lang.String)");

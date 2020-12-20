@@ -20,6 +20,10 @@
             <groupId>com.wws</groupId>
             <artifactId>myrpc-serialize</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.wws</groupId>
+            <artifactId>myrpc-registry-api</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

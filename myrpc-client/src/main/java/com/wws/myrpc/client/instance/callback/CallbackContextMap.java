@@ -1,4 +1,4 @@
-package com.wws.myrpc.client.callback;
+package com.wws.myrpc.client.instance.callback;
 
 import java.util.HashMap;
 import java.util.Map;

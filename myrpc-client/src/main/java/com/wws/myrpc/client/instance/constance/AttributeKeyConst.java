@@ -1,6 +1,6 @@
-package com.wws.myrpc.client.constance;
+package com.wws.myrpc.client.instance.constance;
 
-import com.wws.myrpc.client.callback.CallbackContextMap;
+import com.wws.myrpc.client.instance.callback.CallbackContextMap;
 import com.wws.myrpc.util.IdGenerator;
 import io.netty.util.AttributeKey;
 
