@@ -1,5 +1,6 @@
 package com.wws.myrpc.client.cluster;
 
+import com.wws.myrpc.client.Client;
 import com.wws.myrpc.client.cluster.loadbalance.LoadBalance;
 import com.wws.myrpc.registry.NotifyListener;
 import com.wws.myrpc.registry.RegistryService;
@@ -18,24 +19,37 @@ public abstract class AbstractCluster implements Cluster {
 
     private MyrpcNotifyListener notifyListener;
 
-    public AbstractCluster(String name, LoadBalance loadBalance, RegistryService registryService){
+    private ConnectionManager connectionManager;
+
+    public AbstractCluster(String name, LoadBalance loadBalance, RegistryService registryService) {
         this.loadBalance = loadBalance;
         this.registryService = registryService;
         this.name = name;
         this.notifyListener = new MyrpcNotifyListener();
+        this.connectionManager = new ConnectionManagerImpl();
         registryService.subscribe(name, notifyListener);
     }
 
-    protected List<ServerInfo> listServers(){
+    @Override
+    public void shutdown() {
+        registryService.unsubscribe(name, notifyListener);
+        connectionManager.shutdown();
+    }
+
+    protected List<ServerInfo> listServers() {
         return notifyListener.getList();
     }
 
-    protected LoadBalance getLoadBalance(){
+    protected LoadBalance getLoadBalance() {
         return loadBalance;
     }
 
     protected String getName() {
         return name;
+    }
+
+    protected Client getClient(ServerInfo serverInfo) {
+        return connectionManager.getClient(serverInfo);
     }
 
     private class MyrpcNotifyListener implements NotifyListener {
@@ -45,6 +59,7 @@ public abstract class AbstractCluster implements Cluster {
         @Override
         public void notify(List<ServerInfo> serverInfoList) {
             list = serverInfoList;
+            connectionManager.refresh(list);
         }
 
         @Override
@@ -52,7 +67,7 @@ public abstract class AbstractCluster implements Cluster {
             return name;
         }
 
-        public List<ServerInfo> getList(){
+        public List<ServerInfo> getList() {
             return list == null ? Collections.emptyList() : list;
         }
     }

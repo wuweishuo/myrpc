@@ -1,12 +1,10 @@
 package com.wws.myrpc.client;
 
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
-import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.type.AnnotationMetadata;
@@ -28,7 +26,7 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
         return beanDefinitionHolders;
     }
 
-    public void registerFilters(){
+    public void registerFilters() {
         addIncludeFilter(new AnnotationTypeFilter(RpcClient.class));
     }
 
@@ -37,6 +35,7 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
             ScannedGenericBeanDefinition beanDefinition = (ScannedGenericBeanDefinition) beanDefinitionHolder.getBeanDefinition();
             AnnotationMetadata metadata = beanDefinition.getMetadata();
             Map<String, Object> annotationAttributes = metadata.getAnnotationAttributes(RpcClient.class.getCanonicalName());
+            assert annotationAttributes != null;
             String ip = (String) annotationAttributes.get("ip");
             Integer port = (Integer) annotationAttributes.get("port");
             String name = (String) annotationAttributes.get("name");

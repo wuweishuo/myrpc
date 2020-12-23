@@ -15,7 +15,7 @@ public class Protocol implements Codec {
         header.read(byteBuf);
 
         int bodyLen = header.getBodyLen();
-        if(byteBuf.readableBytes() < bodyLen){
+        if (byteBuf.readableBytes() < bodyLen) {
             throw new NoLongException("no long to read body");
         }
 
@@ -26,7 +26,7 @@ public class Protocol implements Codec {
     @Override
     public void write(ByteBuf byteBuf) {
         header.write(byteBuf);
-        if(body != null) {
+        if (body != null) {
             byteBuf.writeBytes(body);
         }
     }

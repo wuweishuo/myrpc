@@ -14,8 +14,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 
-import java.net.InetAddress;
-
 public class Server {
 
     private final ServerBootstrap serverBootstrap;
@@ -55,7 +53,7 @@ public class Server {
                     }
                 });
         this.port = port;
-        if(isRegister) {
+        if (isRegister) {
             registryService = RegistryServiceFactory.getInstance("zookeeper", registerUrl);
         }
     }
@@ -63,7 +61,7 @@ public class Server {
     public void start() throws Exception {
         serverBootstrap.bind(port).sync();
         System.out.println("server listen in " + port + "......");
-        if(isRegister) {
+        if (isRegister) {
             registryService.register(new ServerInfo(name, "127.0.0.1", port));
         }
     }

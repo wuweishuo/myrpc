@@ -11,7 +11,6 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.util.StringUtils;
 
 public class BeanFactoryTest {
 
@@ -31,13 +30,13 @@ public class BeanFactoryTest {
         AbstractBeanDefinition beanDefinition = beanDefinitionBuilder.getBeanDefinition();
         beanDefinition.setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, UserClient.class.getName());
         beanFactory.registerBeanDefinition("userClient", beanDefinition);
-        System.out.println(beanFactory.getBean(BeanFactory.FACTORY_BEAN_PREFIX+"userClient"));
+        System.out.println(beanFactory.getBean(BeanFactory.FACTORY_BEAN_PREFIX + "userClient"));
         System.out.println(beanFactory.getBean("userClient"));
         UserClient bean = beanFactory.getBean(UserClient.class);
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
 
         BeanDefinitionBuilder beanDefinitionBuilder1 = BeanDefinitionBuilder.genericBeanDefinition(JdkProxyFactory.class);
@@ -62,7 +61,7 @@ public class BeanFactoryTest {
     }
 
     @Test
-    public void test3(){
+    public void test3() {
         JdkProxyFactory jdkProxyFactory = new JdkProxyFactory();
         UserService proxy = jdkProxyFactory.getProxy(null, UserService.class);
         System.out.println(proxy instanceof UserService);

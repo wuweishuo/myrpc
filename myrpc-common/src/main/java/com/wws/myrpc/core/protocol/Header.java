@@ -31,16 +31,16 @@ public class Header implements Codec {
      */
     private int bodyLen;
 
-    private static final int FIX_LENGTH = 2+4+2+4+2;
+    private static final int FIX_LENGTH = 2 + 4 + 2 + 4 + 2;
 
     @Override
     public void read(ByteBuf byteBuf) throws NoLongException {
-        if(byteBuf.readableBytes() < 4){
+        if (byteBuf.readableBytes() < 4) {
             throw new NoLongException("no long to read header len");
         }
         headerLen = byteBuf.readUnsignedShort();
 
-        if(byteBuf.readableBytes() < headerLen - 4){
+        if (byteBuf.readableBytes() < headerLen - 4) {
             throw new NoLongException("no long to read header");
         }
 

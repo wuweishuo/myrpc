@@ -28,7 +28,7 @@ public class CallbackFuture<T> implements Future<T>, Callback<T> {
     @Override
     public T get() throws InterruptedException, ExecutionException {
         latch.await();
-        if(throwable != null){
+        if (throwable != null) {
             throw new ExecutionException(throwable);
         }
         return result;
@@ -37,7 +37,7 @@ public class CallbackFuture<T> implements Future<T>, Callback<T> {
     @Override
     public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         latch.await(timeout, unit);
-        if(throwable != null){
+        if (throwable != null) {
             throw new ExecutionException(throwable);
         }
         return result;

@@ -28,7 +28,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Protocol> {
         Header header = protocol.getHeader();
 
         //心跳不处理
-        if(header.getBodyLen() == 0){
+        if (header.getBodyLen() == 0) {
             return;
         }
 
@@ -72,7 +72,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Protocol> {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         RequestContext requestContext = RequestContext.get();
-        if(requestContext != null) {
+        if (requestContext != null) {
             Protocol protocol = new Protocol();
             Response response = new Response();
             response.setException(cause);
@@ -86,7 +86,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Protocol> {
 
             cause.printStackTrace();
             ctx.channel().writeAndFlush(protocol);
-        }else{
+        } else {
             super.exceptionCaught(ctx, cause);
         }
     }

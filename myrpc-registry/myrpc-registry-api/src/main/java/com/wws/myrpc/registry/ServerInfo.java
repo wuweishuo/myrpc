@@ -19,6 +19,10 @@ public class ServerInfo {
         this.port = port;
     }
 
+    public String getUniqueKey() {
+        return ip + ":" + port;
+    }
+
     public String getName() {
         return name;
     }

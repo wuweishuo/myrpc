@@ -12,7 +12,10 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ZookeeperRegistryService implements RegistryService {
@@ -33,7 +36,7 @@ public class ZookeeperRegistryService implements RegistryService {
     public void connect(String addr) throws Exception {
         this.client = CuratorFrameworkFactory.builder()
                 .connectString(addr)
-                .retryPolicy(new ExponentialBackoffRetry(1000,3))
+                .retryPolicy(new ExponentialBackoffRetry(1000, 3))
                 .namespace(BASE_PATH)
                 .build();
         client.start();
@@ -58,9 +61,9 @@ public class ZookeeperRegistryService implements RegistryService {
     @Override
     public void subscribe(String name, NotifyListener notifyListener) {
         List<ServerInfo> serverInfos;
-        if(instanceMap != null) {
+        if (instanceMap != null) {
             serverInfos = instanceMap.get(name);
-        }else{
+        } else {
             serverInfos = Collections.emptyList();
         }
         notifyListener.notify(serverInfos);
@@ -74,14 +77,15 @@ public class ZookeeperRegistryService implements RegistryService {
 
     /**
      * 生成path，name:ip:port:
+     *
      * @param serverInfo
      * @return
      */
-    private String toPath(ServerInfo serverInfo){
-        return serverInfo.getName() + ":" +serverInfo.getIp() + ":" + serverInfo.getPort();
+    private String toPath(ServerInfo serverInfo) {
+        return serverInfo.getName() + ":" + serverInfo.getIp() + ":" + serverInfo.getPort();
     }
 
-    private ServerInfo toServiceInfo(String path){
+    private ServerInfo toServiceInfo(String path) {
         path = path.substring(path.lastIndexOf("/") + 1);
         String[] strs = path.split(":");
         String name = strs[0];
@@ -91,7 +95,7 @@ public class ZookeeperRegistryService implements RegistryService {
         return serverInfo;
     }
 
-    private void refreshMap(){
+    private void refreshMap() {
         List<ChildData> currentDatas = cache.getCurrentData();
         Map<String, List<ServerInfo>> map = currentDatas.stream()
                 .map(ChildData::getPath)
@@ -104,7 +108,7 @@ public class ZookeeperRegistryService implements RegistryService {
         }
     }
 
-    private class MyRpcPathChildrenCacheListener implements PathChildrenCacheListener{
+    private class MyRpcPathChildrenCacheListener implements PathChildrenCacheListener {
 
         @Override
         public void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent pathChildrenCacheEvent) throws Exception {

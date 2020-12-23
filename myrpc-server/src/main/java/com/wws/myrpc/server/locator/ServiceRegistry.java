@@ -10,11 +10,11 @@ public enum ServiceRegistry {
 
     public Map<String, ServiceDescriptor> map = new HashMap<>();
 
-    public void addServiceDescriptor(ServiceDescriptor serviceDescriptor){
+    public void addServiceDescriptor(ServiceDescriptor serviceDescriptor) {
         map.putIfAbsent(serviceDescriptor.getKey(), serviceDescriptor);
     }
 
-    public ServiceDescriptor getServiceDescriptor(String key){
+    public ServiceDescriptor getServiceDescriptor(String key) {
         return map.get(key);
     }
 

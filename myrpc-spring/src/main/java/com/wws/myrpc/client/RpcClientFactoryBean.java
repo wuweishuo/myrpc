@@ -1,7 +1,7 @@
 package com.wws.myrpc.client;
 
 import com.wws.myrpc.client.cluster.ClusterClient;
-import com.wws.myrpc.client.instance.Client;
+import com.wws.myrpc.client.instance.SimpleClient;
 import com.wws.myrpc.client.proxy.ProxyFactory;
 import org.springframework.beans.factory.FactoryBean;
 
@@ -21,11 +21,11 @@ public class RpcClientFactoryBean<T> implements FactoryBean<T> {
 
     @Override
     public T getObject() throws Exception {
-        IClient client;
-        if(name != null || !"".equals(name)){
+        Client client;
+        if (!"".equals(name)) {
             client = new ClusterClient(name, registerUrl);
-        }else {
-            client = new Client(ip, port);
+        } else {
+            client = new SimpleClient(ip, port);
         }
         return proxyFactory.getProxy(client, clientClass);
     }

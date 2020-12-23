@@ -1,15 +1,15 @@
 package com.wws.myrpc.client.proxy;
 
-import com.wws.myrpc.client.IClient;
+import com.wws.myrpc.client.Client;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 public class RpcClientHandler implements InvocationHandler {
 
-    private IClient client;
+    private Client client;
 
-    public RpcClientHandler(IClient client) {
+    public RpcClientHandler(Client client) {
         this.client = client;
     }
 

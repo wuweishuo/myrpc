@@ -13,8 +13,8 @@ public class RpcServiceBeanPostProcessor implements BeanPostProcessor, Applicati
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         Class<?> clazz = bean.getClass();
         RpcService annotation = clazz.getAnnotation(RpcService.class);
-        if(annotation != null){
-            System.out.println("register service:"+clazz.getName());
+        if (annotation != null) {
+            System.out.println("register service:" + clazz.getName());
             Class<?>[] interfaces = clazz.getInterfaces();
             for (Class<?> anInterface : interfaces) {
                 server.registerService(anInterface, bean);

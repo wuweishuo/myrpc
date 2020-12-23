@@ -6,7 +6,7 @@ public class RpcException extends Exception {
         super(message);
     }
 
-    public RpcException(Throwable e){
+    public RpcException(Throwable e) {
         super(e);
     }
 

@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Bean;
 public class EnableRpcServerConfiguration {
 
     @Bean
-    public Server server(RpcServerProperties rpcServerProperties){
+    public Server server(RpcServerProperties rpcServerProperties) {
         try {
             Server server;
-            if(rpcServerProperties.getRegister()){
+            if (rpcServerProperties.getRegister()) {
                 server = new Server(rpcServerProperties.getPort(), rpcServerProperties.getName(), rpcServerProperties.getRegister(), rpcServerProperties.getRegisterUri());
-            }else {
+            } else {
                 Integer port = rpcServerProperties.getPort();
                 server = new Server(port);
             }

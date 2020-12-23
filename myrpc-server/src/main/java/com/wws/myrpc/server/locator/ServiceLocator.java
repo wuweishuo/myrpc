@@ -9,7 +9,7 @@ public enum ServiceLocator {
 
     INS;
 
-    public void register(Class clazz, Object service){
+    public void register(Class clazz, Object service) {
         Method[] methods = ReflectionUtil.getAllInstanceMethods(clazz);
         for (Method method : methods) {
             Type[] parameterTypes = method.getGenericParameterTypes();
@@ -24,7 +24,7 @@ public enum ServiceLocator {
         }
     }
 
-    public ServiceDescriptor get(String key){
+    public ServiceDescriptor get(String key) {
         return ServiceRegistry.INS.getServiceDescriptor(key);
     }
 

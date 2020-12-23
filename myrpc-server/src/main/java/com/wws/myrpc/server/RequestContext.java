@@ -13,15 +13,15 @@ public class RequestContext {
         this.flowId = flowId;
     }
 
-    public static RequestContext get(){
+    public static RequestContext get() {
         return REQUEST_CONTEXT.get();
     }
 
-    public static void set(RequestContext requestContext){
+    public static void set(RequestContext requestContext) {
         REQUEST_CONTEXT.set(requestContext);
     }
 
-    public static void clear(){
+    public static void clear() {
         REQUEST_CONTEXT.remove();
     }
 

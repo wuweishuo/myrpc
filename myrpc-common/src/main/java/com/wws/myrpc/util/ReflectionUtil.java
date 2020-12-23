@@ -7,13 +7,13 @@ import java.util.List;
 
 public class ReflectionUtil {
 
-    public static Method[] getAllInstanceMethods(Class clazz){
-        if(clazz == null || !Modifier.isInterface(clazz.getModifiers())){
+    public static Method[] getAllInstanceMethods(Class clazz) {
+        if (clazz == null || !Modifier.isInterface(clazz.getModifiers())) {
             return new Method[0];
         }
         List<Method> list = new ArrayList<>();
         for (Method method : clazz.getDeclaredMethods()) {
-            if(!Modifier.isStatic(method.getModifiers())){
+            if (!Modifier.isStatic(method.getModifiers())) {
                 list.add(method);
             }
         }

@@ -15,12 +15,12 @@ public class UserController {
     private UserClient userClient;
 
     @GetMapping("/{id}")
-    public User getById(@PathVariable("id") Integer id){
+    public User getById(@PathVariable("id") Integer id) {
         return userClient.getById(id);
     }
 
     @PostMapping
-    public boolean save(User user){
+    public boolean save(User user) {
         return userClient.save(user);
     }
 

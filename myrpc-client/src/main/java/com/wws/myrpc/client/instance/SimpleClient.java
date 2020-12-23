@@ -1,6 +1,6 @@
 package com.wws.myrpc.client.instance;
 
-import com.wws.myrpc.client.IClient;
+import com.wws.myrpc.client.Client;
 import com.wws.myrpc.client.instance.callback.CallbackContext;
 import com.wws.myrpc.client.instance.callback.CallbackContextMap;
 import com.wws.myrpc.client.instance.callback.CallbackFuture;
@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.concurrent.ExecutionException;
 
-public class Client implements IClient {
+public class SimpleClient implements Client {
 
     private final String ip;
 
@@ -41,7 +41,7 @@ public class Client implements IClient {
 
     private final Serializer serializer = new JdkSerializer();
 
-    public Client(String ip, int port) {
+    public SimpleClient(String ip, int port) {
         this.ip = ip;
         this.port = port;
 
@@ -68,7 +68,12 @@ public class Client implements IClient {
         channel.attr(AttributeKeyConst.CALLBACK_CONTEXT_MAP_ATTRIBUTE_KEY).set(new CallbackContextMap());
         channel.attr(AttributeKeyConst.ID_GENERATOR_ATTRIBUTE_KEY).set(new UUIdGenerator());
         return channel;
+    }
 
+    public void shutdown() {
+        if (workerGroup != null) {
+            workerGroup.shutdownGracefully();
+        }
     }
 
     public <T> T transport(Method method, Class<T> returnType, Object... args) throws Throwable {

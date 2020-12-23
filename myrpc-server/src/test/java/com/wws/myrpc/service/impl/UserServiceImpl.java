@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User multiParam(long id, String name){
+    public User multiParam(long id, String name) {
         User user = new User();
         user.setName(name);
         user.setId(id);

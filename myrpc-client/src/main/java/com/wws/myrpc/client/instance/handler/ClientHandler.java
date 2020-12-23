@@ -25,7 +25,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Protocol> {
         CallbackContext callbackContext = callbackContextMap.get(flowId);
         Response response = serializer.deserialize(protocol.getBody(), Response.class);
         Throwable exception = response.getException();
-        if(exception != null){
+        if (exception != null) {
             callbackContext.getCallbackFuture().setError(exception);
         }
         callbackContext.getCallbackFuture().setResult(response.getResult());
@@ -34,7 +34,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Protocol> {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if(evt instanceof IdleStateEvent){
+        if (evt instanceof IdleStateEvent) {
             Protocol protocol = new Protocol();
             Header header = new Header();
             header.setFlowId(ctx.channel().attr(AttributeKeyConst.ID_GENERATOR_ATTRIBUTE_KEY).get().generate());
