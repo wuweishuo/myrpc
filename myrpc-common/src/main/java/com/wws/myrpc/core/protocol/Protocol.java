@@ -3,10 +3,27 @@ package com.wws.myrpc.core.protocol;
 import com.wws.myrpc.core.exception.NoLongException;
 import io.netty.buffer.ByteBuf;
 
+/**
+ * Protocol
+ * 协议包
+ *              header                              ｜ body
+ * headerLen ｜ magic ｜ version ｜ flowId ｜ bodyLen ｜ body
+ * 2         ｜ 4     ｜ 2       ｜ 4      ｜ 2       ｜ bodyLen
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class Protocol implements Codec {
 
+    /**
+     * 头部信息
+     */
     private Header header;
 
+    /**
+     * 内容
+     */
     private byte[] body;
 
     @Override

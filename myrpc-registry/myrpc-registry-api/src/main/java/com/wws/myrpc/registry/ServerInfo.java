@@ -1,13 +1,33 @@
 package com.wws.myrpc.registry;
 
+/**
+ * ServerInfo
+ * 服务信息
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class ServerInfo {
 
+    /**
+     * 服务名
+     */
     private String name;
 
+    /**
+     * ip
+     */
     private String ip;
 
+    /**
+     * port
+     */
     private Integer port;
 
+    /**
+     * 是否可用
+     */
     private boolean enable;
 
     public ServerInfo() {

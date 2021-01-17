@@ -4,6 +4,16 @@ import com.wws.myrpc.core.exception.NoLongException;
 import com.wws.myrpc.util.ByteBufUtil;
 import io.netty.buffer.ByteBuf;
 
+/**
+ * Header
+ * 协议包头部信息
+ * headerLen ｜ magic ｜ version ｜ flowId ｜ bodyLen
+ * 2         ｜ 4     ｜ 2       ｜ 4      ｜ 2
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class Header implements Codec {
 
     /**

@@ -8,10 +8,16 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
+/**
+ * ProtocolDecoder protocol解码器
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class ProtocolDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        System.out.println("decode .....");
         byteBuf.markReaderIndex();
 
         Protocol protocol = new Protocol();

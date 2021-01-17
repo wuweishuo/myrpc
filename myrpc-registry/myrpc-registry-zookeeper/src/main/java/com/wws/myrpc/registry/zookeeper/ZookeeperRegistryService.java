@@ -18,18 +18,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * ZookeeperRegistryService
+ * zookeeper注册中心
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class ZookeeperRegistryService implements RegistryService {
 
     private CuratorFramework client;
 
+    // 根路径
     private final String BASE_PATH = "myrpc";
 
+    //服务路径
     private final String SERVER_PATH = "/server";
 
     private Map<String, List<ServerInfo>> instanceMap;
 
     private PathChildrenCache cache;
 
+    // 订阅的监听器
     private List<NotifyListener> notifyListeners;
 
     @Override
@@ -91,17 +102,15 @@ public class ZookeeperRegistryService implements RegistryService {
         String name = strs[0];
         String ip = strs[1];
         Integer port = Integer.parseInt(strs[2]);
-        ServerInfo serverInfo = new ServerInfo(name, ip, port);
-        return serverInfo;
+        return new ServerInfo(name, ip, port);
     }
 
     private void refreshMap() {
         List<ChildData> currentDatas = cache.getCurrentData();
-        Map<String, List<ServerInfo>> map = currentDatas.stream()
+        instanceMap = currentDatas.stream()
                 .map(ChildData::getPath)
-                .map(ZookeeperRegistryService.this::toServiceInfo)
+                .map(this::toServiceInfo)
                 .collect(Collectors.groupingBy(ServerInfo::getName));
-        instanceMap = map;
         for (NotifyListener notifyListener : notifyListeners) {
             String name = notifyListener.name();
             notifyListener.notify(instanceMap.getOrDefault(name, Collections.emptyList()));

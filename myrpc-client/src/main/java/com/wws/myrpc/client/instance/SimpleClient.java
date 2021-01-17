@@ -28,6 +28,14 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * SimpleClient
+ * ip+port客户端
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class SimpleClient implements Client {
 
     private final String ip;
@@ -63,7 +71,6 @@ public class SimpleClient implements Client {
 
     public Channel connect() throws InterruptedException {
         ChannelFuture channelFuture = bootstrap.connect(ip, port).sync();
-        System.out.println("client connect to " + ip + ":" + port);
         Channel channel = channelFuture.channel();
         channel.attr(AttributeKeyConst.CALLBACK_CONTEXT_MAP_ATTRIBUTE_KEY).set(new CallbackContextMap());
         channel.attr(AttributeKeyConst.ID_GENERATOR_ATTRIBUTE_KEY).set(new UUIdGenerator());

@@ -4,16 +4,39 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+/**
+ * ServiceDescriptor
+ * 描述一个服务方法
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class ServiceDescriptor {
 
+    /**
+     * 方法的唯一标示， methodName(args class),例如 add(int, int)
+     */
     private String key;
 
+    /**
+     * 服务方法
+     */
     private Method method;
 
+    /**
+     * 服务实例
+     */
     private Object target;
 
+    /**
+     * 方法参数
+     */
     private Type[] parameterTypes;
 
+    /**
+     * 方法返回类型
+     */
     private Type returnType;
 
     @Override

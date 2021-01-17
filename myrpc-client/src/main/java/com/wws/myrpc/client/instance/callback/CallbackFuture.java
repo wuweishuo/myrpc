@@ -2,6 +2,13 @@ package com.wws.myrpc.client.instance.callback;
 
 import java.util.concurrent.*;
 
+/**
+ * CallbackFuture
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class CallbackFuture<T> implements Future<T>, Callback<T> {
 
     private T result;

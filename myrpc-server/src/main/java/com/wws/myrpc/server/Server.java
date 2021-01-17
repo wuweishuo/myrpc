@@ -14,6 +14,14 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 
+/**
+ * Server
+ * 服务端
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class Server {
 
     private final ServerBootstrap serverBootstrap;
@@ -30,10 +38,23 @@ public class Server {
 
     private static final int IDLE_TIMEOUT = 3;
 
+    /**
+     * 仅暴露接口，不向注册中心注册服务
+     *
+     * @param port 端口
+     * @throws Exception
+     */
     public Server(int port) throws Exception {
         this(port, "myrpc", false, null);
     }
 
+    /**
+     * @param port        端口
+     * @param name        服务名
+     * @param isRegister  是否向注册中心注册
+     * @param registerUrl 注册中心地址
+     * @throws Exception
+     */
     public Server(int port, String name, boolean isRegister, String registerUrl) throws Exception {
         this.name = name;
         this.isRegister = isRegister;
@@ -76,7 +97,13 @@ public class Server {
     }
 
 
-    public void registerService(Class clazz, Object service) {
+    /**
+     * 注册服务
+     *
+     * @param clazz   service class
+     * @param service service的实现类实例
+     */
+    public void registerService(Class<?> clazz, Object service) {
         ServiceLocator.INS.register(clazz, service);
     }
 

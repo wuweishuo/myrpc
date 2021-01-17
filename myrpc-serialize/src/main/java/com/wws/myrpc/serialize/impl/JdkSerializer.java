@@ -4,6 +4,14 @@ import com.wws.myrpc.serialize.Serializer;
 
 import java.io.*;
 
+/**
+ * JdkSerializer
+ * jdk原生序列化协议
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class JdkSerializer implements Serializer {
 
     @Override

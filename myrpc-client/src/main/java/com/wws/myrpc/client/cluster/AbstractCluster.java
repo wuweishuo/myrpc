@@ -9,16 +9,38 @@ import com.wws.myrpc.registry.ServerInfo;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * AbstractCluster
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public abstract class AbstractCluster implements Cluster {
 
+    /**
+     * 服务名
+     */
     private String name;
 
+    /**
+     * 负载均衡器
+     */
     private LoadBalance loadBalance;
 
+    /**
+     * 注册中心
+     */
     private RegistryService registryService;
 
+    /**
+     * 注册中心监听器
+     */
     private MyrpcNotifyListener notifyListener;
 
+    /**
+     * client连接管理器
+     */
     private ConnectionManager connectionManager;
 
     public AbstractCluster(String name, LoadBalance loadBalance, RegistryService registryService) {
@@ -36,6 +58,10 @@ public abstract class AbstractCluster implements Cluster {
         connectionManager.shutdown();
     }
 
+    /**
+     * 获取所有服务信息
+     * @return
+     */
     protected List<ServerInfo> listServers() {
         return notifyListener.getList();
     }

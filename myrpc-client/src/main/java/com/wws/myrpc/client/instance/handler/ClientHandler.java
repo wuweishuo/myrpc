@@ -12,13 +12,20 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
 
+/**
+ * ClientHandler
+ * 客户端核心处理器，读取服务端返回信息
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class ClientHandler extends SimpleChannelInboundHandler<Protocol> {
 
     private final Serializer serializer = new JdkSerializer();
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Protocol protocol) throws Exception {
-        System.out.println("service return ......");
         Header header = protocol.getHeader();
         long flowId = header.getFlowId();
         CallbackContextMap callbackContextMap = channelHandlerContext.channel().attr(AttributeKeyConst.CALLBACK_CONTEXT_MAP_ATTRIBUTE_KEY).get();
@@ -34,6 +41,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Protocol> {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        //处理心跳
         if (evt instanceof IdleStateEvent) {
             Protocol protocol = new Protocol();
             Header header = new Header();

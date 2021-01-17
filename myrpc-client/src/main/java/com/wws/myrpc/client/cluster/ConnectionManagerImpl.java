@@ -10,6 +10,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * ConnectionManagerImpl
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class ConnectionManagerImpl implements ConnectionManager {
 
     private HashMap<String, Client> clientMap = new HashMap<>();
@@ -20,6 +27,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
 
     public void refresh(List<ServerInfo> serverInfoList) {
         Map<String, ServerInfo> serverInfoMap = serverInfoList.stream().collect(Collectors.toMap(ServerInfo::getUniqueKey, Function.identity()));
+        // 关闭已经与注册中心失去联系的client
         for (String key : clientMap.keySet()) {
             if (!serverInfoMap.containsKey(key)) {
                 Client client = clientMap.get(key);
@@ -27,6 +35,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
                 clientMap.remove(key);
             }
         }
+        // 创建新发现的client
         for (String key : serverInfoMap.keySet()) {
             if (!clientMap.containsKey(key)) {
                 ServerInfo serverInfo = serverInfoMap.get(key);

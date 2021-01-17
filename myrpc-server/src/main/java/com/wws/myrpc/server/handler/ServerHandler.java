@@ -17,13 +17,20 @@ import io.netty.handler.timeout.IdleStateEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * ServerHandler
+ * 服务端核心处理器
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class ServerHandler extends SimpleChannelInboundHandler<Protocol> {
 
     private final Serializer serializer = new JdkSerializer();
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Protocol protocol) throws Exception {
-        System.out.println("service invoking ....");
         // 反序列化request
         Header header = protocol.getHeader();
 

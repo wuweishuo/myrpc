@@ -8,6 +8,14 @@ import com.wws.myrpc.registry.ServerInfo;
 import java.lang.reflect.Method;
 import java.util.List;
 
+/**
+ * FailFastCluster
+ * 使用failfast策略
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class FailFastCluster extends AbstractCluster {
 
     public FailFastCluster(String name, LoadBalance loadBalance, RegistryService registryService) {

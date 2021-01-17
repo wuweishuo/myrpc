@@ -8,12 +8,29 @@ import io.netty.channel.Channel;
 
 import java.lang.reflect.Method;
 
+/**
+ * ClusterClient
+ * 集群客户端
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public class ClusterClient implements Client {
 
+    /**
+     * 服务名
+     */
     private final String name;
 
+    /**
+     * 集群
+     */
     private final Cluster cluster;
 
+    /**
+     * 注册中心
+     */
     private final RegistryService registryService;
 
     public ClusterClient(String name, String registerUrl) throws Exception {

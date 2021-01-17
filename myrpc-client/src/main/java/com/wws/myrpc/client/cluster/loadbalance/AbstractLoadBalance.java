@@ -4,6 +4,13 @@ import com.wws.myrpc.registry.ServerInfo;
 
 import java.util.List;
 
+/**
+ * AbstractLoadBalance
+ *
+ * @author wuweishuo
+ * @version 1.0.0
+ * @date 2020-12-26
+ */
 public abstract class AbstractLoadBalance implements LoadBalance {
 
     @Override
