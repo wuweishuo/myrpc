@@ -1,7 +1,6 @@
 package com.wws.myrpc.registry;
 
-import java.util.Iterator;
-import java.util.ServiceLoader;
+import com.wws.myrpc.spi.ExtensionLoaderFactory;
 
 /**
  * RegistryServiceFactory
@@ -15,21 +14,15 @@ public class RegistryServiceFactory {
     /**
      * 通过spi获取注册中心
      *
-     * @param name todo
+     * @param name
      * @param addr
      * @return
      * @throws Exception
      */
     public static RegistryService getInstance(String name, String addr) throws Exception {
-        ServiceLoader<RegistryService> serviceLoader = ServiceLoader.load(RegistryService.class);
-        Iterator<RegistryService> iterator = serviceLoader.iterator();
-        if (iterator.hasNext()) {
-            RegistryService next = iterator.next();
-            next.connect(addr);
-            return next;
-        }
-        return null;
-
+        RegistryService registryService = ExtensionLoaderFactory.load(RegistryService.class, name);
+        registryService.connect(addr);
+        return registryService;
     }
 
 }

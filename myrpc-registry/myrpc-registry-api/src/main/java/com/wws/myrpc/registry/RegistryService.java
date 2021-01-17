@@ -1,5 +1,7 @@
 package com.wws.myrpc.registry;
 
+import com.wws.myrpc.spi.SPI;
+
 /**
  * RegistryService
  * 注册中心
@@ -8,6 +10,7 @@ package com.wws.myrpc.registry;
  * @version 1.0.0
  * @date 2020-12-26
  */
+@SPI("zookeeper")
 public interface RegistryService {
 
     /**
