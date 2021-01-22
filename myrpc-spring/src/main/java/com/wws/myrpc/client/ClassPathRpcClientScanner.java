@@ -1,5 +1,7 @@
 package com.wws.myrpc.client;
 
+import com.wws.myrpc.client.cluster.ClusterProperties;
+import com.wws.myrpc.client.instance.SimpleClientProperties;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -9,6 +11,7 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.Set;
@@ -38,12 +41,21 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
             assert annotationAttributes != null;
             String ip = (String) annotationAttributes.get("ip");
             Integer port = (Integer) annotationAttributes.get("port");
-            String name = (String) annotationAttributes.get("name");
-            String registerUrl = (String) annotationAttributes.get("registerUrl");
-            beanDefinition.getPropertyValues().add("ip", ip);
-            beanDefinition.getPropertyValues().add("port", port);
-            beanDefinition.getPropertyValues().add("name", name);
-            beanDefinition.getPropertyValues().add("registerUrl", registerUrl);
+            String serializerName = (String) annotationAttributes.get("serializerName");
+
+            ClientProperties properties;
+            if(StringUtils.isEmpty(ip) || port == null){
+                String name = (String) annotationAttributes.get("name");
+                String registerUrl = (String) annotationAttributes.get("registerUrl");
+                String registryName = (String) annotationAttributes.get("registryName");
+                String clusterName = (String) annotationAttributes.get("clusterName");
+                String loadBalanceName = (String) annotationAttributes.get("loadBalanceName");
+                properties = new ClusterProperties(name, clusterName, loadBalanceName, registryName, registerUrl, serializerName);
+            }else{
+                properties = new SimpleClientProperties(ip, port, serializerName);
+            }
+
+            beanDefinition.getPropertyValues().add("properties", properties);
             beanDefinition.getPropertyValues().add("clientClass", beanDefinition.getBeanClassName());
             beanDefinition.getPropertyValues().add("proxyFactory", new RuntimeBeanReference("rpcClientProxyFactory"));
             beanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);

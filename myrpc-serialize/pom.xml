@@ -11,5 +11,11 @@
 
     <artifactId>myrpc-serialize</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.wws</groupId>
+            <artifactId>myrpc-spi</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

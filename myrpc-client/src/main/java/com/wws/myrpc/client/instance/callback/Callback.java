@@ -12,12 +12,14 @@ public interface Callback<T> {
 
     /**
      * 保存返回值
+     *
      * @param result 返回值
      */
     void setResult(T result);
 
     /**
      * 保存返回的调用异常
+     *
      * @param throwable 调用异常
      */
     void setError(Throwable throwable);

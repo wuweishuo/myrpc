@@ -1,9 +1,10 @@
 package com.wws.myrpc.client.cluster;
 
 import com.wws.myrpc.client.Client;
-import com.wws.myrpc.client.cluster.loadbalance.RandomLoadBalance;
+import com.wws.myrpc.client.cluster.loadbalance.LoadBalance;
 import com.wws.myrpc.registry.RegistryService;
 import com.wws.myrpc.registry.RegistryServiceFactory;
+import com.wws.myrpc.spi.ExtensionLoaderFactory;
 import io.netty.channel.Channel;
 
 import java.lang.reflect.Method;
@@ -28,15 +29,11 @@ public class ClusterClient implements Client {
      */
     private final Cluster cluster;
 
-    /**
-     * 注册中心
-     */
-    private final RegistryService registryService;
-
-    public ClusterClient(String name, String registerUrl) throws Exception {
-        this.name = name;
-        this.registryService = RegistryServiceFactory.getInstance("zookeeper", registerUrl);
-        this.cluster = new FailFastCluster(name, new RandomLoadBalance(), registryService);
+    public ClusterClient(ClusterProperties properties) throws Exception {
+        this.name = properties.getName();
+        LoadBalance loadBalance = ExtensionLoaderFactory.load(LoadBalance.class, properties.getLoadBalanceName());
+        RegistryService registryService = RegistryServiceFactory.getInstance(properties.getRegistryName(), properties.getRegisterUrl());
+        this.cluster = ClusterFactory.getInstance(properties.getClusterName(), name, loadBalance, registryService, properties);
     }
 
     @Override
@@ -52,5 +49,12 @@ public class ClusterClient implements Client {
     @Override
     public void shutdown() {
         cluster.shutdown();
+    }
+
+    @Override
+    public String toString() {
+        return "ClusterClient{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

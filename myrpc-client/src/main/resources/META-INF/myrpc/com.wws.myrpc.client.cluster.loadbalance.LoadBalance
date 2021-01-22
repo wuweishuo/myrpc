@@ -1,0 +1,1 @@
+random=com.wws.myrpc.client.cluster.loadbalance.RandomLoadBalance

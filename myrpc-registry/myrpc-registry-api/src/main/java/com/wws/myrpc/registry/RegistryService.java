@@ -15,6 +15,7 @@ public interface RegistryService {
 
     /**
      * 连接注册中心
+     *
      * @param addr
      * @throws Exception
      */
@@ -22,6 +23,7 @@ public interface RegistryService {
 
     /**
      * 注册服务
+     *
      * @param serverInfo
      * @throws Exception
      */
@@ -29,6 +31,7 @@ public interface RegistryService {
 
     /**
      * 取消注册
+     *
      * @param serverInfo
      * @throws Exception
      */
@@ -36,6 +39,7 @@ public interface RegistryService {
 
     /**
      * 订阅服务
+     *
      * @param name
      * @param notifyListener
      */
@@ -43,6 +47,7 @@ public interface RegistryService {
 
     /**
      * 取消订阅
+     *
      * @param name
      * @param notifyListener
      */

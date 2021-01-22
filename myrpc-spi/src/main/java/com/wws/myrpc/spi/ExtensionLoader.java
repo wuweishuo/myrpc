@@ -28,9 +28,9 @@ public class ExtensionLoader<T> {
 
     private volatile Map<String, String> classMap;
 
-    private final Map<String, Object> instanceMap = new ConcurrentHashMap<>();
+    private final Map<String, T> instanceMap = new ConcurrentHashMap<>();
 
-    private ExtensionLoader(Class<T> clazz, String name){
+    private ExtensionLoader(Class<T> clazz, String name) {
         this.clazz = clazz;
         this.defaultName = name;
     }
@@ -45,15 +45,15 @@ public class ExtensionLoader<T> {
     }
 
     private T getExtension(String name) {
-        T instance = (T) instanceMap.get(name);
-        if(instance == null){
-            synchronized (instanceMap){
+        T instance = instanceMap.get(name);
+        if (instance == null) {
+            synchronized (instanceMap) {
                 instance = (T) instanceMap.get(name);
-                if(instance == null){
+                if (instance == null) {
                     try {
                         instance = initInstance(name);
                     } catch (Exception e) {
-                        throw new IllegalStateException("extension class("+ name+") could not be instantiated:" + e.getMessage(), e);
+                        throw new IllegalStateException("extension class(" + name + ") could not be instantiated:" + e.getMessage(), e);
                     }
                     instanceMap.put(name, instance);
                 }
@@ -64,8 +64,8 @@ public class ExtensionLoader<T> {
 
     private <T> T initInstance(String name) throws IllegalAccessException, InstantiationException {
         String className = classMap.get(name);
-        if(className == null){
-            throw new IllegalArgumentException("extension class("+name+") don't exist!");
+        if (className == null) {
+            throw new IllegalArgumentException("extension class(" + name + ") don't exist!");
         }
         try {
             Class<?> clazz = Class.forName(className);
@@ -75,10 +75,10 @@ public class ExtensionLoader<T> {
         }
     }
 
-    private void loadAllExtensionClass(ClassLoader classLoader){
-        if(classMap == null){
-            synchronized (this){
-                if (classMap == null){
+    private void loadAllExtensionClass(ClassLoader classLoader) {
+        if (classMap == null) {
+            synchronized (this) {
+                if (classMap == null) {
                     Map<String, String> map = new HashMap<>();
                     loadDirectory(classLoader, map);
                     classMap = map;
@@ -87,11 +87,11 @@ public class ExtensionLoader<T> {
         }
     }
 
-    private void loadDirectory(ClassLoader classLoader, Map<String, String> classMap){
+    private void loadDirectory(ClassLoader classLoader, Map<String, String> classMap) {
         String path = BASE_PATH + "/" + clazz.getName();
         try {
             Enumeration<URL> resources = classLoader.getResources(path);
-            while(resources.hasMoreElements()){
+            while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
                 loadResource(url, classMap);
 
@@ -102,13 +102,13 @@ public class ExtensionLoader<T> {
 
     }
 
-    private void loadResource(URL url, Map<String, String> classMap){
+    private void loadResource(URL url, Map<String, String> classMap) {
         try {
             InputStream inputStream = url.openStream();
             Properties properties = new Properties();
             properties.load(inputStream);
             for (Object k : properties.keySet()) {
-                String name  = (String) k;
+                String name = (String) k;
                 String clazz = (String) properties.get(k);
                 classMap.put(name, clazz);
             }
@@ -117,17 +117,17 @@ public class ExtensionLoader<T> {
         }
     }
 
-    protected static <T> ExtensionLoader<T> getExtensionLoader(Class<T> clazz){
+    protected static <T> ExtensionLoader<T> getExtensionLoader(Class<T> clazz) {
         SPI annotation = clazz.getAnnotation(SPI.class);
-        if(annotation == null || !clazz.isInterface()){
+        if (annotation == null || !clazz.isInterface()) {
             throw new IllegalArgumentException("clazz (" + clazz + ") is not spi interface!");
         }
         String name = annotation.value();
-        if("".equals(name)){
+        if ("".equals(name)) {
             throw new IllegalArgumentException("clazz (" + clazz + ") hasn't default name!");
         }
         ExtensionLoader<T> extensionLoader = (ExtensionLoader<T>) LOADERS.get(clazz);
-        if(extensionLoader != null){
+        if (extensionLoader != null) {
             return extensionLoader;
         }
         LOADERS.putIfAbsent(clazz, new ExtensionLoader<>(clazz, name));

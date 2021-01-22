@@ -4,6 +4,8 @@ myrpc:
     register: true
     name: user-service
     registerUri: 127.0.0.1:2181
+    registryName: zookeeper
+    serializerName: jdk
 
 server:
   port: 8081

@@ -1,31 +1,28 @@
 package com.wws.myrpc.client;
 
 import com.wws.myrpc.client.cluster.ClusterClient;
+import com.wws.myrpc.client.cluster.ClusterProperties;
 import com.wws.myrpc.client.instance.SimpleClient;
+import com.wws.myrpc.client.instance.SimpleClientProperties;
 import com.wws.myrpc.client.proxy.ProxyFactory;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.util.StringUtils;
 
 public class RpcClientFactoryBean<T> implements FactoryBean<T> {
-
-    private String ip;
-
-    private int port;
-
-    private String name;
-
-    private String registerUrl;
 
     private Class<T> clientClass;
 
     private ProxyFactory proxyFactory;
 
+    private ClientProperties properties;
+
     @Override
     public T getObject() throws Exception {
         Client client;
-        if (!"".equals(name)) {
-            client = new ClusterClient(name, registerUrl);
+        if (properties instanceof ClusterProperties) {
+            client = new ClusterClient((ClusterProperties) properties);
         } else {
-            client = new SimpleClient(ip, port);
+            client = new SimpleClient((SimpleClientProperties) properties);
         }
         return proxyFactory.getProxy(client, clientClass);
     }
@@ -33,22 +30,6 @@ public class RpcClientFactoryBean<T> implements FactoryBean<T> {
     @Override
     public Class<?> getObjectType() {
         return clientClass;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public Class<T> getClientClass() {
@@ -67,19 +48,11 @@ public class RpcClientFactoryBean<T> implements FactoryBean<T> {
         this.proxyFactory = proxyFactory;
     }
 
-    public String getName() {
-        return name;
+    public ClientProperties getProperties() {
+        return properties;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getRegisterUrl() {
-        return registerUrl;
-    }
-
-    public void setRegisterUrl(String registerUrl) {
-        this.registerUrl = registerUrl;
+    public void setProperties(ClientProperties properties) {
+        this.properties = properties;
     }
 }

@@ -2,12 +2,15 @@ package com.wws.myrpc.client.cluster;
 
 import com.wws.myrpc.client.Client;
 import com.wws.myrpc.client.cluster.loadbalance.LoadBalance;
+import com.wws.myrpc.core.exception.RpcException;
 import com.wws.myrpc.registry.NotifyListener;
 import com.wws.myrpc.registry.RegistryService;
 import com.wws.myrpc.registry.ServerInfo;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * AbstractCluster
@@ -43,23 +46,53 @@ public abstract class AbstractCluster implements Cluster {
      */
     private ConnectionManager connectionManager;
 
-    public AbstractCluster(String name, LoadBalance loadBalance, RegistryService registryService) {
+    /**
+     * cluster状态
+     */
+    private AtomicReference<ClusterStatusEnum> status = new AtomicReference<>(ClusterStatusEnum.INIT);
+
+    private ClusterProperties clusterProperties;
+
+    @Override
+    public void init(String name, LoadBalance loadBalance, RegistryService registryService, ClusterProperties clusterProperties) {
         this.loadBalance = loadBalance;
         this.registryService = registryService;
         this.name = name;
         this.notifyListener = new MyrpcNotifyListener();
         this.connectionManager = new ConnectionManagerImpl();
+        this.clusterProperties = clusterProperties;
         registryService.subscribe(name, notifyListener);
+        status.set(ClusterStatusEnum.RUNNING);
     }
 
     @Override
+    public <T> T transport(Method method, Class<T> returnType, Object... args) throws Throwable {
+        if (status.get() == ClusterStatusEnum.INIT) {
+            throw new IllegalStateException("cluster don't init");
+        }
+        if (status.get() == ClusterStatusEnum.SHUTDOWN) {
+            throw new IllegalStateException("cluster had shutdown");
+        }
+        List<ServerInfo> serverInfos = listServers();
+        ServerInfo serverInfo = getLoadBalance().select(serverInfos);
+        if (serverInfo == null) {
+            throw new RpcException("server not found:" + getName());
+        }
+        return doTransport(serverInfo, method, returnType, args);
+    }
+
+    abstract <T> T doTransport(ServerInfo serverInfo, Method method, Class<T> returnType, Object... args) throws Throwable;
+
+    @Override
     public void shutdown() {
+        status.set(ClusterStatusEnum.SHUTDOWN);
         registryService.unsubscribe(name, notifyListener);
         connectionManager.shutdown();
     }
 
     /**
      * 获取所有服务信息
+     *
      * @return
      */
     protected List<ServerInfo> listServers() {
@@ -85,7 +118,7 @@ public abstract class AbstractCluster implements Cluster {
         @Override
         public void notify(List<ServerInfo> serverInfoList) {
             list = serverInfoList;
-            connectionManager.refresh(list);
+            connectionManager.refresh(list, clusterProperties);
         }
 
         @Override

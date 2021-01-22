@@ -12,6 +12,7 @@ public interface IdGenerator {
 
     /**
      * 生成flowId
+     *
      * @return
      */
     long generate();

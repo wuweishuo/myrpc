@@ -14,6 +14,7 @@ import com.wws.myrpc.core.protocol.Protocol;
 import com.wws.myrpc.core.protocol.Request;
 import com.wws.myrpc.serialize.Serializer;
 import com.wws.myrpc.serialize.impl.JdkSerializer;
+import com.wws.myrpc.spi.ExtensionLoaderFactory;
 import com.wws.myrpc.util.impl.UUIdGenerator;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -47,15 +48,16 @@ public class SimpleClient implements Client {
 
     private final int HEART_BEAT = 1;
 
-    private final Serializer serializer = new JdkSerializer();
+    private final Serializer serializer;
 
-    public SimpleClient(String ip, int port) {
+    public SimpleClient(String ip, int port, String serializerName) {
         this.ip = ip;
         this.port = port;
+        this.serializer = ExtensionLoaderFactory.load(Serializer.class, serializerName);
 
         this.bootstrap = new Bootstrap();
         this.workerGroup = new NioEventLoopGroup();
-        bootstrap.channel(NioSocketChannel.class)
+        this.bootstrap.channel(NioSocketChannel.class)
                 .group(workerGroup)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
@@ -63,10 +65,14 @@ public class SimpleClient implements Client {
                         socketChannel.pipeline()
                                 .addLast(new IdleStateHandler(0, HEART_BEAT, 0))
                                 .addLast(new ProtocolDecoder())
-                                .addLast(new ClientHandler())
+                                .addLast(new ClientHandler(serializer))
                                 .addLast(new ProtocolEncoder());
                     }
                 });
+    }
+
+    public SimpleClient(SimpleClientProperties properties) {
+        this(properties.getIp(), properties.getPort(), properties.getSerializerName());
     }
 
     public Channel connect() throws InterruptedException {
@@ -115,5 +121,11 @@ public class SimpleClient implements Client {
         return flowId;
     }
 
-
+    @Override
+    public String toString() {
+        return "SimpleClient{" +
+                "ip='" + ip + '\'' +
+                ", port=" + port +
+                '}';
+    }
 }

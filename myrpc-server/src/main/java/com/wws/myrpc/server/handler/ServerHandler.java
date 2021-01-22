@@ -6,7 +6,6 @@ import com.wws.myrpc.core.protocol.Protocol;
 import com.wws.myrpc.core.protocol.Request;
 import com.wws.myrpc.core.protocol.Response;
 import com.wws.myrpc.serialize.Serializer;
-import com.wws.myrpc.serialize.impl.JdkSerializer;
 import com.wws.myrpc.server.RequestContext;
 import com.wws.myrpc.server.locator.ServiceDescriptor;
 import com.wws.myrpc.server.locator.ServiceLocator;
@@ -27,7 +26,11 @@ import java.lang.reflect.Method;
  */
 public class ServerHandler extends SimpleChannelInboundHandler<Protocol> {
 
-    private final Serializer serializer = new JdkSerializer();
+    private Serializer serializer;
+
+    public ServerHandler(Serializer serializer) {
+        this.serializer = serializer;
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Protocol protocol) throws Exception {

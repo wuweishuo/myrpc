@@ -30,13 +30,16 @@ public class ServerInfo {
      */
     private boolean enable;
 
-    public ServerInfo() {
-    }
+    /**
+     * 序列化方式
+     */
+    private String serializerName;
 
-    public ServerInfo(String name, String ip, Integer port) {
+    public ServerInfo(String name, String ip, Integer port, String serializerName) {
         this.name = name;
         this.ip = ip;
         this.port = port;
+        this.serializerName = serializerName;
     }
 
     public String getUniqueKey() {
@@ -73,5 +76,13 @@ public class ServerInfo {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
+    }
+
+    public String getSerializerName() {
+        return serializerName;
+    }
+
+    public void setSerializerName(String serializerName) {
+        this.serializerName = serializerName;
     }
 }

@@ -12,6 +12,12 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -93,16 +99,32 @@ public class ZookeeperRegistryService implements RegistryService {
      * @return
      */
     private String toPath(ServerInfo serverInfo) {
-        return serverInfo.getName() + ":" + serverInfo.getIp() + ":" + serverInfo.getPort();
+        String path = serverInfo.getName() + ":" + serverInfo.getIp() + ":" + serverInfo.getPort() + "?serializerName=" + serverInfo.getSerializerName();
+        try {
+            return URLEncoder.encode(path, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     private ServerInfo toServiceInfo(String path) {
         path = path.substring(path.lastIndexOf("/") + 1);
-        String[] strs = path.split(":");
-        String name = strs[0];
-        String ip = strs[1];
-        Integer port = Integer.parseInt(strs[2]);
-        return new ServerInfo(name, ip, port);
+        try {
+            path = URLDecoder.decode(path, "UTF-8");
+            String[] strs = path.split("\\?");
+            String[] url = strs[0].split(":");
+            String name = url[0];
+            String ip = url[1];
+            Integer port = Integer.parseInt(url[2]);
+            String serializerName = null;
+            if(strs.length >=2){
+                String[] param = strs[1].split("&");
+                serializerName = param[0];
+            }
+            return new ServerInfo(name, ip, port, serializerName);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     private void refreshMap() {

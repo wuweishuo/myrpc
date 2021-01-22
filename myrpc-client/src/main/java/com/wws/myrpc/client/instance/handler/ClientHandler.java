@@ -22,7 +22,11 @@ import io.netty.handler.timeout.IdleStateEvent;
  */
 public class ClientHandler extends SimpleChannelInboundHandler<Protocol> {
 
-    private final Serializer serializer = new JdkSerializer();
+    private Serializer serializer;
+
+    public ClientHandler(Serializer serializer){
+        this.serializer = serializer;
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Protocol protocol) throws Exception {

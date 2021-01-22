@@ -10,11 +10,10 @@ public class EnableRpcServerConfiguration {
     public Server server(RpcServerProperties rpcServerProperties) {
         try {
             Server server;
-            if (rpcServerProperties.getRegister()) {
-                server = new Server(rpcServerProperties.getPort(), rpcServerProperties.getName(), rpcServerProperties.getRegister(), rpcServerProperties.getRegisterUri());
-            } else {
-                Integer port = rpcServerProperties.getPort();
-                server = new Server(port);
+            if(rpcServerProperties.isRegister()) {
+                server = new Server(rpcServerProperties.getServerProperties());
+            }else{
+                server = new Server(rpcServerProperties.getPort());
             }
             server.start();
             return server;

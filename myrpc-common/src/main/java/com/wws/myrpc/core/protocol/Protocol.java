@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 /**
  * Protocol
  * 协议包
- *              header                              ｜ body
+ * header                              ｜ body
  * headerLen ｜ magic ｜ version ｜ flowId ｜ bodyLen ｜ body
  * 2         ｜ 4     ｜ 2       ｜ 4      ｜ 2       ｜ bodyLen
  *
