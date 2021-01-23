@@ -19,6 +19,7 @@
         <module>myrpc-spring</module>
         <module>myrpc-registry</module>
         <module>myrpc-spi</module>
+        <module>myrpc-demo</module>
     </modules>
 
     <properties>
@@ -65,6 +66,12 @@
             <dependency>
                 <groupId>com.wws</groupId>
                 <artifactId>myrpc-serialize</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.wws</groupId>
+                <artifactId>myrpc-all</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

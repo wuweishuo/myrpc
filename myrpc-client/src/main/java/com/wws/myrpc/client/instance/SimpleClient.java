@@ -50,6 +50,14 @@ public class SimpleClient implements Client {
 
     private final Serializer serializer;
 
+    public SimpleClient(String ip, int port){
+        this(ip, port, "jdk");
+    }
+
+    public SimpleClient(SimpleClientProperties properties) {
+        this(properties.getIp(), properties.getPort(), properties.getSerializerName());
+    }
+
     public SimpleClient(String ip, int port, String serializerName) {
         this.ip = ip;
         this.port = port;
@@ -69,10 +77,6 @@ public class SimpleClient implements Client {
                                 .addLast(new ProtocolEncoder());
                     }
                 });
-    }
-
-    public SimpleClient(SimpleClientProperties properties) {
-        this(properties.getIp(), properties.getPort(), properties.getSerializerName());
     }
 
     public Channel connect() throws InterruptedException {
