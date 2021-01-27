@@ -27,9 +27,8 @@ public interface ConnectionManager {
      * 刷新管理的client连接
      *
      * @param serverInfoList 从注册中心获取的最新服务信息
-     * @param clusterProperties
      */
-    void refresh(List<ServerInfo> serverInfoList, ClusterProperties clusterProperties);
+    void refresh(List<ServerInfo> serverInfoList);
 
     /**
      * 关闭所有连接

@@ -7,7 +7,6 @@ import com.wws.myrpc.core.protocol.Header;
 import com.wws.myrpc.core.protocol.Protocol;
 import com.wws.myrpc.core.protocol.Response;
 import com.wws.myrpc.serialize.Serializer;
-import com.wws.myrpc.serialize.impl.JdkSerializer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -22,9 +21,9 @@ import io.netty.handler.timeout.IdleStateEvent;
  */
 public class ClientHandler extends SimpleChannelInboundHandler<Protocol> {
 
-    private Serializer serializer;
+    private final Serializer serializer;
 
-    public ClientHandler(Serializer serializer){
+    public ClientHandler(Serializer serializer) {
         this.serializer = serializer;
     }
 

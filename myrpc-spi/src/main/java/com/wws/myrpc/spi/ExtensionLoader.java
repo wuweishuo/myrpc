@@ -48,7 +48,7 @@ public class ExtensionLoader<T> {
         T instance = instanceMap.get(name);
         if (instance == null) {
             synchronized (instanceMap) {
-                instance = (T) instanceMap.get(name);
+                instance = instanceMap.get(name);
                 if (instance == null) {
                     try {
                         instance = initInstance(name);

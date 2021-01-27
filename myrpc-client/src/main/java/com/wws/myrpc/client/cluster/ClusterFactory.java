@@ -13,9 +13,9 @@ import com.wws.myrpc.spi.ExtensionLoaderFactory;
  */
 public class ClusterFactory {
 
-    public static Cluster getInstance(String name, String serviceName, LoadBalance loadBalance, RegistryService registryService, ClusterProperties properties){
+    public static Cluster getInstance(String name, String serviceName, LoadBalance loadBalance, RegistryService registryService){
         Cluster cluster = ExtensionLoaderFactory.load(Cluster.class, name);
-        cluster.init(serviceName, loadBalance, registryService, properties);
+        cluster.init(serviceName, loadBalance, registryService);
         return cluster;
     }
 

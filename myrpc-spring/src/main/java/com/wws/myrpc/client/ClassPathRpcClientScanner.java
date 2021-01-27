@@ -41,7 +41,6 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
             assert annotationAttributes != null;
             String ip = (String) annotationAttributes.get("ip");
             Integer port = (Integer) annotationAttributes.get("port");
-            String serializerName = (String) annotationAttributes.get("serializerName");
 
             ClientProperties properties;
             if(StringUtils.isEmpty(ip) || port == null){
@@ -50,8 +49,9 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
                 String registryName = (String) annotationAttributes.get("registryName");
                 String clusterName = (String) annotationAttributes.get("clusterName");
                 String loadBalanceName = (String) annotationAttributes.get("loadBalanceName");
-                properties = new ClusterProperties(name, clusterName, loadBalanceName, registryName, registerUrl, serializerName);
+                properties = new ClusterProperties(name, clusterName, loadBalanceName, registryName, registerUrl);
             }else{
+                String serializerName = (String) annotationAttributes.get("serializerName");
                 properties = new SimpleClientProperties(ip, port, serializerName);
             }
 

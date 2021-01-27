@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class ServiceLocatorTest {
 
-    private ServiceLocator serviceLocator = ServiceLocator.INS;
+    private final ServiceLocator serviceLocator = ServiceLocator.INS;
 
     @Test
     public void testGet() {

@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  */
 public class ServerHandler extends SimpleChannelInboundHandler<Protocol> {
 
-    private Serializer serializer;
+    private final Serializer serializer;
 
     public ServerHandler(Serializer serializer) {
         this.serializer = serializer;

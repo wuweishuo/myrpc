@@ -19,6 +19,6 @@ public enum ClusterStatusEnum {
     /**
      * 已销毁
      */
-    SHUTDOWN();
+    SHUTDOWN()
 
 }

@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 
 public class RpcClientHandler implements InvocationHandler {
 
-    private Client client;
+    private final Client client;
 
     public RpcClientHandler(Client client) {
         this.client = client;

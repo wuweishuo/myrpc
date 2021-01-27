@@ -13,7 +13,6 @@ import com.wws.myrpc.core.protocol.Header;
 import com.wws.myrpc.core.protocol.Protocol;
 import com.wws.myrpc.core.protocol.Request;
 import com.wws.myrpc.serialize.Serializer;
-import com.wws.myrpc.serialize.impl.JdkSerializer;
 import com.wws.myrpc.spi.ExtensionLoaderFactory;
 import com.wws.myrpc.util.impl.UUIdGenerator;
 import io.netty.bootstrap.Bootstrap;

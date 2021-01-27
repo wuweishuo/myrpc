@@ -1,7 +1,6 @@
 package com.wws.myrpc.server;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.util.StringUtils;
 
 @ConfigurationProperties(prefix = "myrpc.server")
 public class RpcServerProperties {

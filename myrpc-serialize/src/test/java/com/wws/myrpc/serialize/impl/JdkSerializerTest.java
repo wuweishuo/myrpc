@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class JdkSerializerTest extends TestCase {
 
-    private Serializer serializer = new JdkSerializer();
+    private final Serializer serializer = new JdkSerializer();
 
     @Test
     public void testDeserialize() throws IOException, ClassNotFoundException {

@@ -32,7 +32,6 @@ public class BeanFactoryTest {
         beanFactory.registerBeanDefinition("userClient", beanDefinition);
         System.out.println(beanFactory.getBean(BeanFactory.FACTORY_BEAN_PREFIX + "userClient"));
         System.out.println(beanFactory.getBean("userClient"));
-        UserClient bean = beanFactory.getBean(UserClient.class);
     }
 
     @Test

@@ -13,15 +13,9 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -99,9 +93,10 @@ public class ZookeeperRegistryService implements RegistryService {
      * @return
      */
     private String toPath(ServerInfo serverInfo) {
-        String path = serverInfo.getName() + ":" + serverInfo.getIp() + ":" + serverInfo.getPort() + "?serializerName=" + serverInfo.getSerializerName();
+        URL url = new URL("myrpc", serverInfo.getIp(), serverInfo.getPort(), serverInfo.getName());
+        url.addParameter("serializerName", serverInfo.getSerializerName());
         try {
-            return URLEncoder.encode(path, "UTF-8");
+            return URLEncoder.encode(url.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -111,17 +106,8 @@ public class ZookeeperRegistryService implements RegistryService {
         path = path.substring(path.lastIndexOf("/") + 1);
         try {
             path = URLDecoder.decode(path, "UTF-8");
-            String[] strs = path.split("\\?");
-            String[] url = strs[0].split(":");
-            String name = url[0];
-            String ip = url[1];
-            Integer port = Integer.parseInt(url[2]);
-            String serializerName = null;
-            if(strs.length >=2){
-                String[] param = strs[1].split("&");
-                serializerName = param[0];
-            }
-            return new ServerInfo(name, ip, port, serializerName);
+            URL url = new URL(path);
+            return new ServerInfo(url.getPath(), url.getIp(), url.getPort(), url.getParameter("serializerName"));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -144,6 +130,92 @@ public class ZookeeperRegistryService implements RegistryService {
         @Override
         public void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent pathChildrenCacheEvent) throws Exception {
             refreshMap();
+        }
+    }
+
+    private class URL{
+
+        private Map<String, String> map;
+
+        private String scheme;
+
+        private String ip;
+
+        private int port;
+
+        private String path;
+
+        URL(String scheme, String ip, int port, String path) {
+            this.scheme = scheme;
+            this.ip = ip;
+            this.port = port;
+            this.path = path;
+            this.map = new HashMap<>();
+        }
+
+        URL(String url){
+            String[] strs= url.split("\\?");
+            load(strs[0]);
+            if(strs.length > 1){
+                loadParameter(strs[1]);
+            }
+        }
+
+        private void load(String url){
+            String[] strs = url.split("://");
+            scheme = strs[0];
+            strs = strs[1].split("/");
+            path = strs[1];
+            strs = strs[0].split(":");
+            ip = strs[0];
+            port = Integer.parseInt(strs[1]);
+        }
+
+        private void loadParameter(String parameters){
+            String[] strs = parameters.split("&");
+            for (String str : strs) {
+                String[] arr = str.split("=");
+                map = new HashMap<>(arr.length);
+                map.put(arr[0].trim(), arr[1].trim());
+            }
+        }
+
+        public String getScheme() {
+            return scheme;
+        }
+
+        public String getIp() {
+            return ip;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void addParameter(String key, String value){
+            map.put(key, value);
+        }
+
+        public String getParameter(String key){
+            return map.get(key);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append(scheme).append("://").append(ip).append(":").append(port).append("/").append(path);
+            if (map != null && map.size() > 0) {
+                sb.append("?");
+                for (String key : map.keySet()) {
+                    sb.append(key).append("=").append(map.get(key)).append("&");
+                }
+                sb.delete(sb.length() - 1, sb.length());
+            }
+            return sb.toString();
         }
     }
 }

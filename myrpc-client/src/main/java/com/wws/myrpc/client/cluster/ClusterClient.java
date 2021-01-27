@@ -33,7 +33,7 @@ public class ClusterClient implements Client {
         this.name = properties.getName();
         LoadBalance loadBalance = ExtensionLoaderFactory.load(LoadBalance.class, properties.getLoadBalanceName());
         RegistryService registryService = RegistryServiceFactory.getInstance(properties.getRegistryName(), properties.getRegisterUrl());
-        this.cluster = ClusterFactory.getInstance(properties.getClusterName(), name, loadBalance, registryService, properties);
+        this.cluster = ClusterFactory.getInstance(properties.getClusterName(), name, loadBalance, registryService);
     }
 
     @Override

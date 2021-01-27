@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public class ServiceRegistryTest {
 
-    private ServiceRegistry serviceRegistry = ServiceRegistry.INS;
+    private final ServiceRegistry serviceRegistry = ServiceRegistry.INS;
 
     @Test
     public void testAddServiceDescriptor() {

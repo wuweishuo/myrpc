@@ -25,7 +25,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
         return clientMap.get(serverInfo.getUniqueKey());
     }
 
-    public void refresh(List<ServerInfo> serverInfoList, ClusterProperties clusterProperties) {
+    public void refresh(List<ServerInfo> serverInfoList) {
         Map<String, ServerInfo> serverInfoMap = serverInfoList.stream().collect(Collectors.toMap(ServerInfo::getUniqueKey, Function.identity()));
         // 关闭已经与注册中心失去联系的client
         for (String key : clientMap.keySet()) {
@@ -39,7 +39,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
         for (String key : serverInfoMap.keySet()) {
             if (!clientMap.containsKey(key)) {
                 ServerInfo serverInfo = serverInfoMap.get(key);
-                SimpleClient simpleClient = new SimpleClient(serverInfo.getIp(), serverInfo.getPort(), clusterProperties.getSerializerName());
+                SimpleClient simpleClient = new SimpleClient(serverInfo.getIp(), serverInfo.getPort(), serverInfo.getSerializerName());
                 try {
                     simpleClient.connect();
                     clientMap.putIfAbsent(key, simpleClient);

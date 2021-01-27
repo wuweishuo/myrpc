@@ -21,15 +21,12 @@ public class ClusterProperties implements ClientProperties {
 
     private String registerUrl;
 
-    private String serializerName;
-
-    public ClusterProperties(String name, String clusterName, String loadBalanceName, String registryName, String registerUrl, String serializerName) {
+    public ClusterProperties(String name, String clusterName, String loadBalanceName, String registryName, String registerUrl) {
         this.name = name;
         this.clusterName = clusterName;
         this.loadBalanceName = loadBalanceName;
         this.registryName = registryName;
         this.registerUrl = registerUrl;
-        this.serializerName = serializerName;
     }
 
     public String getName() {
@@ -70,13 +67,5 @@ public class ClusterProperties implements ClientProperties {
 
     public void setRegisterUrl(String registerUrl) {
         this.registerUrl = registerUrl;
-    }
-
-    public String getSerializerName() {
-        return serializerName;
-    }
-
-    public void setSerializerName(String serializerName) {
-        this.serializerName = serializerName;
     }
 }

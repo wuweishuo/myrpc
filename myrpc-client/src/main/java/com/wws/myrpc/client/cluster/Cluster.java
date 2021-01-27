@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 @SPI("failFast")
 public interface Cluster {
 
-    void init(String name, LoadBalance loadBalance, RegistryService registryService, ClusterProperties properties);
+    void init(String name, LoadBalance loadBalance, RegistryService registryService);
 
     <T> T transport(Method method, Class<T> returnType, Object... args) throws Throwable;
 

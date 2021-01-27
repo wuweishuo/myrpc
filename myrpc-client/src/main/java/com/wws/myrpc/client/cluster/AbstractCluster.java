@@ -49,18 +49,15 @@ public abstract class AbstractCluster implements Cluster {
     /**
      * cluster状态
      */
-    private AtomicReference<ClusterStatusEnum> status = new AtomicReference<>(ClusterStatusEnum.INIT);
-
-    private ClusterProperties clusterProperties;
+    private final AtomicReference<ClusterStatusEnum> status = new AtomicReference<>(ClusterStatusEnum.INIT);
 
     @Override
-    public void init(String name, LoadBalance loadBalance, RegistryService registryService, ClusterProperties clusterProperties) {
+    public void init(String name, LoadBalance loadBalance, RegistryService registryService) {
         this.loadBalance = loadBalance;
         this.registryService = registryService;
         this.name = name;
         this.notifyListener = new MyrpcNotifyListener();
         this.connectionManager = new ConnectionManagerImpl();
-        this.clusterProperties = clusterProperties;
         registryService.subscribe(name, notifyListener);
         status.set(ClusterStatusEnum.RUNNING);
     }
@@ -118,7 +115,7 @@ public abstract class AbstractCluster implements Cluster {
         @Override
         public void notify(List<ServerInfo> serverInfoList) {
             list = serverInfoList;
-            connectionManager.refresh(list, clusterProperties);
+            connectionManager.refresh(list);
         }
 
         @Override

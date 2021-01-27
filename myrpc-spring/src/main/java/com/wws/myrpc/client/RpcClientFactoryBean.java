@@ -6,7 +6,6 @@ import com.wws.myrpc.client.instance.SimpleClient;
 import com.wws.myrpc.client.instance.SimpleClientProperties;
 import com.wws.myrpc.client.proxy.ProxyFactory;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.util.StringUtils;
 
 public class RpcClientFactoryBean<T> implements FactoryBean<T> {
 

@@ -18,7 +18,7 @@ public class RpcClientScannerRegistrar implements ImportBeanDefinitionRegistrar 
         AnnotationAttributes annoAttrs = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(RpcClientScan.class.getName()));
         ClassPathRpcClientScanner scanner = new ClassPathRpcClientScanner(registry);
 
-        Set<String> basePackages = new HashSet<String>();
+        Set<String> basePackages = new HashSet<>();
         for (String pkg : annoAttrs.getStringArray("value")) {
             if (StringUtils.hasText(pkg)) {
                 basePackages.add(pkg);
