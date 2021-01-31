@@ -71,19 +71,16 @@ public abstract class AbstractCluster implements Cluster {
             throw new IllegalStateException("cluster had shutdown");
         }
         List<ServerInfo> serverInfos = listServers();
-        ServerInfo serverInfo = getLoadBalance().select(serverInfos);
-        if (serverInfo == null) {
-            throw new RpcException("server not found:" + getName());
-        }
-        return doTransport(serverInfo, method, returnType, args);
+        return doTransport(serverInfos, method, returnType, args);
     }
 
-    abstract <T> T doTransport(ServerInfo serverInfo, Method method, Class<T> returnType, Object... args) throws Throwable;
+    abstract <T> T doTransport(List<ServerInfo> serverInfos, Method method, Class<T> returnType, Object... args) throws Throwable;
 
     @Override
-    public void shutdown() {
+    public void shutdown() throws Exception {
         status.set(ClusterStatusEnum.SHUTDOWN);
         registryService.unsubscribe(name, notifyListener);
+        registryService.destroy();
         connectionManager.shutdown();
     }
 

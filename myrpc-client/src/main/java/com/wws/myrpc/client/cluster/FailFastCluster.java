@@ -1,8 +1,10 @@
 package com.wws.myrpc.client.cluster;
 
+import com.wws.myrpc.core.exception.RpcException;
 import com.wws.myrpc.registry.ServerInfo;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * FailFastCluster
@@ -15,7 +17,11 @@ import java.lang.reflect.Method;
 public class FailFastCluster extends AbstractCluster {
 
     @Override
-    public <T> T doTransport(ServerInfo serverInfo, Method method, Class<T> returnType, Object... args) throws Throwable {
+    public <T> T doTransport(List<ServerInfo> serverInfos, Method method, Class<T> returnType, Object... args) throws Throwable {
+        ServerInfo serverInfo = getLoadBalance().select(serverInfos);
+        if (serverInfo == null) {
+            throw new RpcException("server not found:" + getName());
+        }
         return getClient(serverInfo).transport(method, returnType, args);
     }
 

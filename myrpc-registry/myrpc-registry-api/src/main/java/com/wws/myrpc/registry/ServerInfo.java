@@ -1,5 +1,8 @@
 package com.wws.myrpc.registry;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * ServerInfo
  * 服务信息
@@ -35,11 +38,22 @@ public class ServerInfo {
      */
     private String serializerName;
 
+    /**
+     * 额外信息
+     */
+    private final Map<String, String> metaData;
+
     public ServerInfo(String name, String ip, Integer port, String serializerName) {
+        this(name, ip, port, true, serializerName);
+    }
+
+    public ServerInfo(String name, String ip, Integer port, boolean enable, String serializerName) {
         this.name = name;
         this.ip = ip;
         this.port = port;
+        this.enable = enable;
         this.serializerName = serializerName;
+        this.metaData = new HashMap<>();
     }
 
     public String getUniqueKey() {
@@ -84,5 +98,13 @@ public class ServerInfo {
 
     public void setSerializerName(String serializerName) {
         this.serializerName = serializerName;
+    }
+
+    public void setProperties(String key, String value){
+        metaData.put(key, value);
+    }
+
+    public String getProperties(String key){
+        return metaData.get(key);
     }
 }

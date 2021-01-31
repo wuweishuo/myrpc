@@ -28,25 +28,24 @@ import java.util.stream.Collectors;
  */
 public class ZookeeperRegistryService implements RegistryService {
 
-    private CuratorFramework client;
-
     // 根路径
-    private final String BASE_PATH = "myrpc";
+    private static final String BASE_PATH = "myrpc";
 
     //服务路径
     private final String SERVER_PATH = "/server";
 
+    private final CuratorFramework client;
+
     private Map<String, List<ServerInfo>> instanceMap;
 
-    private PathChildrenCache cache;
+    private final PathChildrenCache cache;
 
     // 订阅的监听器
-    private List<NotifyListener> notifyListeners;
+    private final List<NotifyListener> notifyListeners;
 
-    @Override
-    public void connect(String addr) throws Exception {
+    public ZookeeperRegistryService(String url) throws Exception {
         this.client = CuratorFrameworkFactory.builder()
-                .connectString(addr)
+                .connectString(url)
                 .retryPolicy(new ExponentialBackoffRetry(1000, 3))
                 .namespace(BASE_PATH)
                 .build();
@@ -55,6 +54,12 @@ public class ZookeeperRegistryService implements RegistryService {
         this.cache.getListenable().addListener(new MyRpcPathChildrenCacheListener());
         this.cache.start();
         this.notifyListeners = new ArrayList<>();
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        this.cache.close();
+        this.client.close();
     }
 
     @Override
@@ -133,7 +138,7 @@ public class ZookeeperRegistryService implements RegistryService {
         }
     }
 
-    private class URL{
+    private static class URL{
 
         private Map<String, String> map;
 

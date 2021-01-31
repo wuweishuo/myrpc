@@ -5,9 +5,10 @@ import com.wws.myrpc.client.cluster.ClusterProperties;
 import com.wws.myrpc.client.instance.SimpleClient;
 import com.wws.myrpc.client.instance.SimpleClientProperties;
 import com.wws.myrpc.client.proxy.ProxyFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 
-public class RpcClientFactoryBean<T> implements FactoryBean<T> {
+public class RpcClientFactoryBean<T> implements FactoryBean<T>, DisposableBean {
 
     private Class<T> clientClass;
 
@@ -15,9 +16,10 @@ public class RpcClientFactoryBean<T> implements FactoryBean<T> {
 
     private ClientProperties properties;
 
+    private Client client;
+
     @Override
     public T getObject() throws Exception {
-        Client client;
         if (properties instanceof ClusterProperties) {
             client = new ClusterClient((ClusterProperties) properties);
         } else {
@@ -53,5 +55,10 @@ public class RpcClientFactoryBean<T> implements FactoryBean<T> {
 
     public void setProperties(ClientProperties properties) {
         this.properties = properties;
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        client.shutdown();
     }
 }

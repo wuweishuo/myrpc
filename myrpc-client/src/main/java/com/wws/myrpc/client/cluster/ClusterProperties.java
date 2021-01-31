@@ -1,6 +1,7 @@
 package com.wws.myrpc.client.cluster;
 
 import com.wws.myrpc.client.ClientProperties;
+import com.wws.myrpc.registry.RegistryProperties;
 
 /**
  * ClusterProperties
@@ -19,14 +20,14 @@ public class ClusterProperties implements ClientProperties {
 
     private String registryName;
 
-    private String registerUrl;
+    private RegistryProperties registryProperties;
 
-    public ClusterProperties(String name, String clusterName, String loadBalanceName, String registryName, String registerUrl) {
+    public ClusterProperties(String name, String clusterName, String loadBalanceName, String registryName, RegistryProperties registryProperties) {
         this.name = name;
         this.clusterName = clusterName;
         this.loadBalanceName = loadBalanceName;
         this.registryName = registryName;
-        this.registerUrl = registerUrl;
+        this.registryProperties = registryProperties;
     }
 
     public String getName() {
@@ -61,11 +62,11 @@ public class ClusterProperties implements ClientProperties {
         this.registryName = registryName;
     }
 
-    public String getRegisterUrl() {
-        return registerUrl;
+    public RegistryProperties getRegistryProperties() {
+        return registryProperties;
     }
 
-    public void setRegisterUrl(String registerUrl) {
-        this.registerUrl = registerUrl;
+    public void setRegistryProperties(RegistryProperties registryProperties) {
+        this.registryProperties = registryProperties;
     }
 }

@@ -15,6 +15,7 @@
     <modules>
         <module>myrpc-registry-api</module>
         <module>myrpc-registry-zookeeper</module>
+        <module>myrpc-registry-nacos</module>
     </modules>
 
     <dependencyManagement>

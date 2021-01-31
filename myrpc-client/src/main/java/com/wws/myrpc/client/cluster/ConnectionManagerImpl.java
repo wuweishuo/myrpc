@@ -3,6 +3,8 @@ package com.wws.myrpc.client.cluster;
 import com.wws.myrpc.client.Client;
 import com.wws.myrpc.client.instance.SimpleClient;
 import com.wws.myrpc.registry.ServerInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
  */
 public class ConnectionManagerImpl implements ConnectionManager {
 
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionManagerImpl.class);
+
     private HashMap<String, Client> clientMap = new HashMap<>();
 
     public Client getClient(ServerInfo serverInfo) {
@@ -31,7 +35,11 @@ public class ConnectionManagerImpl implements ConnectionManager {
         for (String key : clientMap.keySet()) {
             if (!serverInfoMap.containsKey(key)) {
                 Client client = clientMap.get(key);
-                client.shutdown();
+                try {
+                    client.shutdown();
+                } catch (Exception e) {
+                    logger.error("{} shutdown err:{}", client, e);
+                }
                 clientMap.remove(key);
             }
         }
@@ -52,7 +60,11 @@ public class ConnectionManagerImpl implements ConnectionManager {
 
     public void shutdown() {
         for (Client client : clientMap.values()) {
-            client.shutdown();
+            try {
+                client.shutdown();
+            } catch (Exception e) {
+                logger.error("{} shutdown err:{}", client, e);
+            }
         }
         clientMap = new HashMap<>();
     }

@@ -65,7 +65,7 @@
 
             <dependency>
                 <groupId>com.wws</groupId>
-                <artifactId>myrpc-serialize</artifactId>
+                <artifactId>myrpc-serialize-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

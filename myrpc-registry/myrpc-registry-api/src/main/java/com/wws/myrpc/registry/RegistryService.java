@@ -1,7 +1,5 @@
 package com.wws.myrpc.registry;
 
-import com.wws.myrpc.spi.SPI;
-
 /**
  * RegistryService
  * 注册中心
@@ -10,16 +8,13 @@ import com.wws.myrpc.spi.SPI;
  * @version 1.0.0
  * @date 2020-12-26
  */
-@SPI("zookeeper")
 public interface RegistryService {
 
     /**
-     * 连接注册中心
-     *
-     * @param addr
+     * 断开注册中心连接
      * @throws Exception
      */
-    void connect(String addr) throws Exception;
+    void destroy() throws Exception;
 
     /**
      * 注册服务

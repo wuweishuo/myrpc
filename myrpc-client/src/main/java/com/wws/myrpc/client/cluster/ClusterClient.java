@@ -6,6 +6,8 @@ import com.wws.myrpc.registry.RegistryService;
 import com.wws.myrpc.registry.RegistryServiceFactory;
 import com.wws.myrpc.spi.ExtensionLoaderFactory;
 import io.netty.channel.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 
@@ -18,6 +20,8 @@ import java.lang.reflect.Method;
  * @date 2020-12-26
  */
 public class ClusterClient implements Client {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClusterClient.class);
 
     /**
      * 服务名
@@ -32,7 +36,8 @@ public class ClusterClient implements Client {
     public ClusterClient(ClusterProperties properties) throws Exception {
         this.name = properties.getName();
         LoadBalance loadBalance = ExtensionLoaderFactory.load(LoadBalance.class, properties.getLoadBalanceName());
-        RegistryService registryService = RegistryServiceFactory.getInstance(properties.getRegistryName(), properties.getRegisterUrl());
+        RegistryServiceFactory registryServiceFactory = ExtensionLoaderFactory.load(RegistryServiceFactory.class, properties.getRegistryName());
+        RegistryService registryService = registryServiceFactory.connect(properties.getRegistryProperties());
         this.cluster = ClusterFactory.getInstance(properties.getClusterName(), name, loadBalance, registryService);
     }
 
@@ -47,8 +52,9 @@ public class ClusterClient implements Client {
     }
 
     @Override
-    public void shutdown() {
+    public void shutdown() throws Exception {
         cluster.shutdown();
+        logger.info("client:{} shutdown", this);
     }
 
     @Override

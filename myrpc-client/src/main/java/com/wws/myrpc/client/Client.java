@@ -28,5 +28,5 @@ public interface Client {
      */
     <T> T transport(Method method, Class<T> returnType, Object... args) throws Throwable;
 
-    void shutdown();
+    void shutdown() throws Exception;
 }

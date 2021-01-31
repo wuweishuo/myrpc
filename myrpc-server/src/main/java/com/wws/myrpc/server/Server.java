@@ -6,6 +6,7 @@ import com.wws.myrpc.registry.RegistryService;
 import com.wws.myrpc.registry.RegistryServiceFactory;
 import com.wws.myrpc.registry.ServerInfo;
 import com.wws.myrpc.serialize.Serializer;
+import com.wws.myrpc.serialize.SerializerFactory;
 import com.wws.myrpc.server.handler.ServerHandler;
 import com.wws.myrpc.server.locator.ServiceLocator;
 import com.wws.myrpc.spi.ExtensionLoaderFactory;
@@ -60,7 +61,8 @@ public class Server {
         this.properties = properties;
 
         if (properties.isRegister()) {
-            this.registryService = RegistryServiceFactory.getInstance(properties.getRegistryName(), properties.getRegisterUrl());
+            RegistryServiceFactory registryServiceFactory = ExtensionLoaderFactory.load(RegistryServiceFactory.class, properties.getRegistryName());
+            this.registryService = registryServiceFactory.connect(properties.getRegistryProperties());
         }
     }
 
@@ -69,6 +71,8 @@ public class Server {
         this.serverBootstrap = new ServerBootstrap();
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
+        SerializerFactory serializerFactory = ExtensionLoaderFactory.load(SerializerFactory.class, serializerName);
+        Serializer serializer = serializerFactory.getInstance();
         this.serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
@@ -77,7 +81,7 @@ public class Server {
                         socketChannel.pipeline()
                                 .addLast(new IdleStateHandler(0, 0, IDLE_TIMEOUT))
                                 .addLast(new ProtocolDecoder())
-                                .addLast(new ServerHandler(ExtensionLoaderFactory.load(Serializer.class, serializerName)))
+                                .addLast(new ServerHandler(serializer))
                                 .addLast(new ProtocolEncoder());
                     }
                 });
@@ -91,13 +95,17 @@ public class Server {
         }
     }
 
-    public void shutdown() {
+    public void shutdown() throws Exception {
+        if(properties.isRegister()){
+            registryService.destroy();
+        }
         if (bossGroup != null) {
             bossGroup.shutdownGracefully();
         }
         if (workerGroup != null) {
             workerGroup.shutdownGracefully();
         }
+        logger.info("server:{} shutdown success", this);
     }
 
 
@@ -111,4 +119,10 @@ public class Server {
         ServiceLocator.INS.register(clazz, service);
     }
 
+    @Override
+    public String toString() {
+        return "Server{" +
+                "port=" + port +
+                '}';
+    }
 }

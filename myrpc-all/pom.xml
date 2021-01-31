@@ -20,6 +20,35 @@
             <groupId>com.wws</groupId>
             <artifactId>myrpc-server</artifactId>
         </dependency>
+
+        <!--serializer-->
+        <dependency>
+            <groupId>com.wws</groupId>
+            <artifactId>myrpc-serialize-fst</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wws</groupId>
+            <artifactId>myrpc-serialize-jdk</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wws</groupId>
+            <artifactId>myrpc-serialize-kryo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--registry-->
+        <dependency>
+            <groupId>com.wws</groupId>
+            <artifactId>myrpc-registry-zookeeper</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wws</groupId>
+            <artifactId>myrpc-registry-nacos</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

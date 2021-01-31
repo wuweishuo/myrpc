@@ -13,6 +13,7 @@ import com.wws.myrpc.core.protocol.Header;
 import com.wws.myrpc.core.protocol.Protocol;
 import com.wws.myrpc.core.protocol.Request;
 import com.wws.myrpc.serialize.Serializer;
+import com.wws.myrpc.serialize.SerializerFactory;
 import com.wws.myrpc.spi.ExtensionLoaderFactory;
 import com.wws.myrpc.util.impl.UUIdGenerator;
 import io.netty.bootstrap.Bootstrap;
@@ -23,6 +24,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -37,6 +40,8 @@ import java.util.concurrent.ExecutionException;
  * @date 2020-12-26
  */
 public class SimpleClient implements Client {
+
+    private static final Logger logger = LoggerFactory.getLogger(SimpleClient.class);
 
     private final String ip;
 
@@ -60,7 +65,8 @@ public class SimpleClient implements Client {
     public SimpleClient(String ip, int port, String serializerName) {
         this.ip = ip;
         this.port = port;
-        this.serializer = ExtensionLoaderFactory.load(Serializer.class, serializerName);
+        SerializerFactory serializerFactory = ExtensionLoaderFactory.load(SerializerFactory.class, serializerName);
+        this.serializer = serializerFactory.getInstance();
 
         this.bootstrap = new Bootstrap();
         this.workerGroup = new NioEventLoopGroup();
@@ -90,6 +96,7 @@ public class SimpleClient implements Client {
         if (workerGroup != null) {
             workerGroup.shutdownGracefully();
         }
+        logger.info("client:{} shutdown success", this);
     }
 
     public <T> T transport(Method method, Class<T> returnType, Object... args) throws Throwable {

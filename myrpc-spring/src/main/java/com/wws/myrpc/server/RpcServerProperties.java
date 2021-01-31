@@ -1,5 +1,6 @@
 package com.wws.myrpc.server;
 
+import com.wws.myrpc.registry.RegistryProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "myrpc.server")
@@ -18,7 +19,7 @@ public class RpcServerProperties {
     private String serializerName;
 
     protected ServerProperties getServerProperties(){
-        return new ServerProperties(port, name, register, registryName, registerUri, serializerName);
+        return new ServerProperties(port, name, register, registryName, new RegistryProperties(registerUri), serializerName);
     }
 
     public Integer getPort() {

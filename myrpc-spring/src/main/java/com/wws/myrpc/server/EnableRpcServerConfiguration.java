@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(RpcServerProperties.class)
 public class EnableRpcServerConfiguration {
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public Server server(RpcServerProperties rpcServerProperties) {
         try {
             Server server;

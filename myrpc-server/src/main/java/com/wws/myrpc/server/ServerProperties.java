@@ -1,5 +1,7 @@
 package com.wws.myrpc.server;
 
+import com.wws.myrpc.registry.RegistryProperties;
+
 /**
  * ServerProperties
  *
@@ -17,7 +19,7 @@ public class ServerProperties {
 
     private String registryName;
 
-    private String registerUrl;
+    private RegistryProperties registryProperties;
 
     private String serializerName;
 
@@ -30,12 +32,12 @@ public class ServerProperties {
         this.name = name;
     }
 
-    public ServerProperties(int port, String name, boolean register, String registryName, String registerUrl, String serializerName) {
+    public ServerProperties(int port, String name, boolean register, String registryName, RegistryProperties registryProperties, String serializerName) {
         this.port = port;
         this.name = name;
         this.register = register;
         this.registryName = registryName;
-        this.registerUrl = registerUrl;
+        this.registryProperties = registryProperties;
         this.serializerName = serializerName;
     }
 
@@ -71,12 +73,12 @@ public class ServerProperties {
         this.registryName = registryName;
     }
 
-    public String getRegisterUrl() {
-        return registerUrl;
+    public RegistryProperties getRegistryProperties() {
+        return registryProperties;
     }
 
-    public void setRegisterUrl(String registerUrl) {
-        this.registerUrl = registerUrl;
+    public void setRegistryProperties(RegistryProperties registryProperties) {
+        this.registryProperties = registryProperties;
     }
 
     public String getSerializerName() {
