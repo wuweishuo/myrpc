@@ -1,5 +1,6 @@
 package com.wws.myrpc.serialize.impl;
 
+import com.wws.myrpc.serialize.SerializerProperties;
 import org.nustaq.serialization.FSTConfiguration;
 import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
@@ -18,6 +19,10 @@ import java.io.OutputStream;
 public class FSTSerializer extends AbstractSerializer {
 
     private static final FSTConfiguration conf = FSTConfiguration.createDefaultConfiguration();
+
+    public FSTSerializer(SerializerProperties properties) {
+        super(properties);
+    }
 
     @Override
     public void serialize(OutputStream out, Object obj) throws IOException {

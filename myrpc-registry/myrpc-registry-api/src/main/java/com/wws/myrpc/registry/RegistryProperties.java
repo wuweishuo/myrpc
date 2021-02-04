@@ -1,6 +1,6 @@
 package com.wws.myrpc.registry;
 
-import java.util.Properties;
+import com.wws.myrpc.spi.SPIProperties;
 
 /**
  * RegistryProperties
@@ -9,11 +9,14 @@ import java.util.Properties;
  * @version 1.0.0
  * @date 2021-01-31
  */
-public class RegistryProperties extends Properties {
+public class RegistryProperties extends SPIProperties {
+
+    public static final String SERVER_NAME = "server.name";
 
     public static final String SERVER_ADDR = "server.addr";
 
-    public RegistryProperties(String url) {
+    public RegistryProperties(String name, String url) {
+        setProperty(SERVER_NAME, name);
         setProperty(SERVER_ADDR, url);
     }
 }

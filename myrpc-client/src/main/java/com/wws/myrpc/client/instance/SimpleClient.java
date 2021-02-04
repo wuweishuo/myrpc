@@ -14,6 +14,7 @@ import com.wws.myrpc.core.protocol.Protocol;
 import com.wws.myrpc.core.protocol.Request;
 import com.wws.myrpc.serialize.Serializer;
 import com.wws.myrpc.serialize.SerializerFactory;
+import com.wws.myrpc.serialize.SerializerProperties;
 import com.wws.myrpc.spi.ExtensionLoaderFactory;
 import com.wws.myrpc.util.impl.UUIdGenerator;
 import io.netty.bootstrap.Bootstrap;
@@ -55,18 +56,19 @@ public class SimpleClient implements Client {
     private final Serializer serializer;
 
     public SimpleClient(String ip, int port){
-        this(ip, port, "jdk");
+        this(ip, port, new SerializerProperties("jdk"));
     }
 
     public SimpleClient(SimpleClientProperties properties) {
-        this(properties.getIp(), properties.getPort(), properties.getSerializerName());
+        this(properties.getIp(), properties.getPort(), properties.getSerializerProperties());
     }
 
-    public SimpleClient(String ip, int port, String serializerName) {
+    public SimpleClient(String ip, int port, SerializerProperties serializerProperties) {
         this.ip = ip;
         this.port = port;
-        SerializerFactory serializerFactory = ExtensionLoaderFactory.load(SerializerFactory.class, serializerName);
-        this.serializer = serializerFactory.getInstance();
+        SerializerFactory serializerFactory = ExtensionLoaderFactory.load(SerializerFactory.class,
+                serializerProperties.getProperty(SerializerProperties.SERIALIZER_NAME));
+        this.serializer = serializerFactory.getInstance(serializerProperties);
 
         this.bootstrap = new Bootstrap();
         this.workerGroup = new NioEventLoopGroup();

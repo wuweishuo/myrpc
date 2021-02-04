@@ -1,7 +1,7 @@
 package com.wws.myrpc.client;
 
 import com.wws.myrpc.client.cluster.ClusterClient;
-import com.wws.myrpc.client.cluster.ClusterProperties;
+import com.wws.myrpc.client.cluster.ClusterClientProperties;
 import com.wws.myrpc.client.instance.SimpleClient;
 import com.wws.myrpc.client.instance.SimpleClientProperties;
 import com.wws.myrpc.client.proxy.ProxyFactory;
@@ -20,8 +20,8 @@ public class RpcClientFactoryBean<T> implements FactoryBean<T>, DisposableBean {
 
     @Override
     public T getObject() throws Exception {
-        if (properties instanceof ClusterProperties) {
-            client = new ClusterClient((ClusterProperties) properties);
+        if (properties instanceof ClusterClientProperties) {
+            client = new ClusterClient((ClusterClientProperties) properties);
         } else {
             client = new SimpleClient((SimpleClientProperties) properties);
         }

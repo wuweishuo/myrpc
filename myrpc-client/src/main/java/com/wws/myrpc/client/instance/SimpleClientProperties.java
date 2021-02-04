@@ -1,6 +1,7 @@
 package com.wws.myrpc.client.instance;
 
 import com.wws.myrpc.client.ClientProperties;
+import com.wws.myrpc.serialize.SerializerProperties;
 
 /**
  * SimpleClientProperties
@@ -15,12 +16,12 @@ public class SimpleClientProperties implements ClientProperties {
 
     private Integer port;
 
-    private String serializerName;
+    private SerializerProperties serializerProperties;
 
-    public SimpleClientProperties(String ip, Integer port, String serializerName) {
+    public SimpleClientProperties(String ip, Integer port, SerializerProperties serializerProperties) {
         this.ip = ip;
         this.port = port;
-        this.serializerName = serializerName;
+        this.serializerProperties = serializerProperties;
     }
 
     public String getIp() {
@@ -39,11 +40,11 @@ public class SimpleClientProperties implements ClientProperties {
         this.port = port;
     }
 
-    public String getSerializerName() {
-        return serializerName;
+    public SerializerProperties getSerializerProperties() {
+        return serializerProperties;
     }
 
-    public void setSerializerName(String serializerName) {
-        this.serializerName = serializerName;
+    public void setSerializerProperties(SerializerProperties serializerProperties) {
+        this.serializerProperties = serializerProperties;
     }
 }

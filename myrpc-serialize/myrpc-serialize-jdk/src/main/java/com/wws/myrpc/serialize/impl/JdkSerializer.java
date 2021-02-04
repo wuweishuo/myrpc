@@ -1,5 +1,7 @@
 package com.wws.myrpc.serialize.impl;
 
+import com.wws.myrpc.serialize.SerializerProperties;
+
 import java.io.*;
 
 /**
@@ -11,6 +13,10 @@ import java.io.*;
  * @date 2020-12-26
  */
 public class JdkSerializer extends AbstractSerializer {
+
+    public JdkSerializer(SerializerProperties properties) {
+        super(properties);
+    }
 
     @Override
     public void serialize(OutputStream out, Object obj) throws IOException {

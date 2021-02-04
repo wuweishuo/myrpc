@@ -9,9 +9,9 @@ import com.wws.myrpc.spi.SPI;
  * @version 1.0.0
  * @date 2021-01-29
  */
-@SPI("jdk")
+
 public interface SerializerFactory {
 
-    Serializer getInstance();
+    Serializer getInstance(SerializerProperties properties);
 
 }

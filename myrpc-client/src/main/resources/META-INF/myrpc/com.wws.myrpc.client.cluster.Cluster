@@ -1,1 +1,3 @@
 failFast=com.wws.myrpc.client.cluster.FailFastCluster
+failOver=com.wws.myrpc.client.cluster.FailOverCluster
+failBack=com.wws.myrpc.client.cluster.FailBackCluster

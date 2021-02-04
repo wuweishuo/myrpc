@@ -2,6 +2,8 @@ package com.wws.myrpc.client.cluster;
 
 import com.wws.myrpc.client.Client;
 import com.wws.myrpc.client.cluster.loadbalance.LoadBalance;
+import com.wws.myrpc.client.cluster.loadbalance.LoadBalanceProperties;
+import com.wws.myrpc.registry.RegistryProperties;
 import com.wws.myrpc.registry.RegistryService;
 import com.wws.myrpc.registry.RegistryServiceFactory;
 import com.wws.myrpc.spi.ExtensionLoaderFactory;
@@ -33,10 +35,14 @@ public class ClusterClient implements Client {
      */
     private final Cluster cluster;
 
-    public ClusterClient(ClusterProperties properties) throws Exception {
+    public ClusterClient(ClusterClientProperties properties) throws Exception {
         this.name = properties.getName();
-        LoadBalance loadBalance = ExtensionLoaderFactory.load(LoadBalance.class, properties.getLoadBalanceName());
-        RegistryServiceFactory registryServiceFactory = ExtensionLoaderFactory.load(RegistryServiceFactory.class, properties.getRegistryName());
+        LoadBalanceProperties loadBalanceProperties = properties.getLoadBalanceProperties();
+        RegistryProperties registryProperties = properties.getRegistryProperties();
+        LoadBalance loadBalance = ExtensionLoaderFactory.load(LoadBalance.class,
+                loadBalanceProperties.getProperty(LoadBalanceProperties.LOAD_BALANCE_ADDR));
+        RegistryServiceFactory registryServiceFactory = ExtensionLoaderFactory.load(RegistryServiceFactory.class,
+                registryProperties.getProperty(RegistryProperties.SERVER_NAME));
         RegistryService registryService = registryServiceFactory.connect(properties.getRegistryProperties());
         this.cluster = ClusterFactory.getInstance(properties.getClusterName(), name, loadBalance, registryService);
     }

@@ -26,13 +26,20 @@ public class ExtensionLoader<T> {
 
     private final String defaultName;
 
+    private final Class<? extends SPIProperties> propertiesClass;
+
+    private final Class<? extends SPIFactory<T, ? extends SPIProperties>> factoryClass;
+
     private volatile Map<String, String> classMap;
 
     private final Map<String, T> instanceMap = new ConcurrentHashMap<>();
 
-    private ExtensionLoader(Class<T> clazz, String name) {
+    public ExtensionLoader(Class<T> clazz, String defaultName, Class<? extends SPIProperties> propertiesClass,
+                           Class<? extends SPIFactory<T, ? extends SPIProperties>> factoryClass) {
         this.clazz = clazz;
-        this.defaultName = name;
+        this.defaultName = defaultName;
+        this.propertiesClass = propertiesClass;
+        this.factoryClass = factoryClass;
     }
 
     protected T load(ClassLoader classLoader) {
@@ -120,17 +127,20 @@ public class ExtensionLoader<T> {
     protected static <T> ExtensionLoader<T> getExtensionLoader(Class<T> clazz) {
         SPI annotation = clazz.getAnnotation(SPI.class);
         if (annotation == null || !clazz.isInterface()) {
-            throw new IllegalArgumentException("clazz (" + clazz + ") is not spi interface!");
+            throw new IllegalArgumentException("class (" + clazz + ") is not spi interface!");
         }
         String name = annotation.value();
         if ("".equals(name)) {
-            throw new IllegalArgumentException("clazz (" + clazz + ") hasn't default name!");
+            throw new IllegalArgumentException("class (" + clazz + ") hasn't default name!");
         }
+        Class<? extends SPIProperties> propertiesClass = annotation.properties();
+        Class<? extends SPIFactory<T, ? extends SPIProperties>> factoryClass =
+                (Class<? extends SPIFactory<T, ? extends SPIProperties>>) annotation.factory();
         ExtensionLoader<T> extensionLoader = (ExtensionLoader<T>) LOADERS.get(clazz);
         if (extensionLoader != null) {
             return extensionLoader;
         }
-        LOADERS.putIfAbsent(clazz, new ExtensionLoader<>(clazz, name));
+        LOADERS.putIfAbsent(clazz, new ExtensionLoader<>(clazz, name, propertiesClass, factoryClass));
         return (ExtensionLoader<T>) LOADERS.get(clazz);
     }
 

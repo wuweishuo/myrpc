@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.util.Pool;
+import com.wws.myrpc.serialize.SerializerProperties;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +21,8 @@ public class KryoSerializer extends AbstractSerializer {
 
     private final Pool<Kryo> kryoPool;
 
-    public KryoSerializer(){
+    public KryoSerializer(SerializerProperties properties){
+        super(properties);
         kryoPool = new Pool<Kryo>(true, false, 8) {
             protected Kryo create () {
                 Kryo kryo = new Kryo();

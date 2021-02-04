@@ -1,5 +1,7 @@
 package com.wws.myrpc.serialize;
 
+import com.wws.myrpc.spi.SPI;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,6 +14,7 @@ import java.io.OutputStream;
  * @version 1.0.0
  * @date 2020-12-26
  */
+@SPI(value = "jdk", properties = SerializerProperties.class)
 public interface Serializer {
 
     /**

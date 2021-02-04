@@ -20,6 +20,18 @@ public @interface SPI {
      *
      * @return
      */
-    String value() default "";
+    String value();
+
+    /**
+     * 配置类
+     * @return
+     */
+    Class<? extends SPIProperties> properties();
+
+    /**
+     * 工厂类
+     * @return
+     */
+    Class<? extends SPIFactory> factory() default SPIFactory.class;
 
 }

@@ -10,7 +10,7 @@ import com.wws.myrpc.registry.ServerInfo;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * AbstractCluster
@@ -46,10 +46,11 @@ public abstract class AbstractCluster implements Cluster {
      */
     private ConnectionManager connectionManager;
 
-    /**
-     * cluster状态
-     */
-    private final AtomicReference<ClusterStatusEnum> status = new AtomicReference<>(ClusterStatusEnum.INIT);
+    protected ClusterProperties properties;
+
+    public AbstractCluster(ClusterProperties properties) {
+        this.properties = properties;
+    }
 
     @Override
     public void init(String name, LoadBalance loadBalance, RegistryService registryService) {
@@ -59,26 +60,36 @@ public abstract class AbstractCluster implements Cluster {
         this.notifyListener = new MyrpcNotifyListener();
         this.connectionManager = new ConnectionManagerImpl();
         registryService.subscribe(name, notifyListener);
-        status.set(ClusterStatusEnum.RUNNING);
     }
 
     @Override
     public <T> T transport(Method method, Class<T> returnType, Object... args) throws Throwable {
-        if (status.get() == ClusterStatusEnum.INIT) {
-            throw new IllegalStateException("cluster don't init");
-        }
-        if (status.get() == ClusterStatusEnum.SHUTDOWN) {
-            throw new IllegalStateException("cluster had shutdown");
-        }
         List<ServerInfo> serverInfos = listServers();
         return doTransport(serverInfos, method, returnType, args);
     }
 
     abstract <T> T doTransport(List<ServerInfo> serverInfos, Method method, Class<T> returnType, Object... args) throws Throwable;
 
+    public ServerInfo doSelect(List<ServerInfo> serverInfos, List<ServerInfo> selected) throws RpcException {
+        ServerInfo serverInfo = getLoadBalance().select(serverInfos);
+        if (serverInfo == null) {
+            throw new RpcException("server not found:" + getName());
+        }
+        if(serverInfos.size() == selected.size()){
+            return serverInfo;
+        }
+        if(selected.contains(serverInfo)){
+            List<ServerInfo> reselect = serverInfos.stream().filter(s -> !selected.contains(s)).collect(Collectors.toList());
+            ServerInfo reselectInfo = getLoadBalance().select(reselect);
+            if(reselectInfo != null){
+                return reselectInfo;
+            }
+        }
+        return serverInfo;
+    }
+
     @Override
     public void shutdown() throws Exception {
-        status.set(ClusterStatusEnum.SHUTDOWN);
         registryService.unsubscribe(name, notifyListener);
         registryService.destroy();
         connectionManager.shutdown();

@@ -6,8 +6,8 @@
 - [x] 基于netty的rpc通信
 - [x] 支持多种序列化方式，目前仅支持jdk, fst, kyro等
 - [x] 支持多种注册中心，目前仅支持zookeeper, nacos等
-- [x] 支持多种故障转移策略：目前仅支持failfast，后续拓展
-- [x] 支持多种负载均衡策略，目前仅支持random，后续拓展
+- [x] 支持多种故障转移策略：目前仅支持failfast，failover，failback等
+- [x] 支持多种负载均衡策略，目前仅支持random，roundRobin等
 - [x] 对上述功能支持spi扩展
 - [ ] 支持filter扩展点
 - [x] 集成spring

@@ -3,8 +3,8 @@ myrpc:
     port: 9000
     register: true
     name: user-service
-    registerUri: 127.0.0.1:8848
-    registryName: nacos
+    registerUri: 127.0.0.1:2181
+    registryName: zookeeper
     serializerName: fst
 
 server:

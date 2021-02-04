@@ -1,6 +1,7 @@
 package com.wws.myrpc.server;
 
 import com.wws.myrpc.registry.RegistryProperties;
+import com.wws.myrpc.serialize.SerializerProperties;
 
 /**
  * ServerProperties
@@ -17,11 +18,9 @@ public class ServerProperties {
 
     private boolean register;
 
-    private String registryName;
-
     private RegistryProperties registryProperties;
 
-    private String serializerName;
+    private SerializerProperties serializerProperties;
 
     public ServerProperties(int port) {
         this.port = port;
@@ -32,13 +31,12 @@ public class ServerProperties {
         this.name = name;
     }
 
-    public ServerProperties(int port, String name, boolean register, String registryName, RegistryProperties registryProperties, String serializerName) {
+    public ServerProperties(int port, String name, boolean register, RegistryProperties registryProperties, SerializerProperties serializerProperties) {
         this.port = port;
         this.name = name;
         this.register = register;
-        this.registryName = registryName;
         this.registryProperties = registryProperties;
-        this.serializerName = serializerName;
+        this.serializerProperties = serializerProperties;
     }
 
     public int getPort() {
@@ -65,14 +63,6 @@ public class ServerProperties {
         this.register = register;
     }
 
-    public String getRegistryName() {
-        return registryName;
-    }
-
-    public void setRegistryName(String registryName) {
-        this.registryName = registryName;
-    }
-
     public RegistryProperties getRegistryProperties() {
         return registryProperties;
     }
@@ -81,11 +71,11 @@ public class ServerProperties {
         this.registryProperties = registryProperties;
     }
 
-    public String getSerializerName() {
-        return serializerName;
+    public SerializerProperties getSerializerProperties() {
+        return serializerProperties;
     }
 
-    public void setSerializerName(String serializerName) {
-        this.serializerName = serializerName;
+    public void setSerializerProperties(SerializerProperties serializerProperties) {
+        this.serializerProperties = serializerProperties;
     }
 }

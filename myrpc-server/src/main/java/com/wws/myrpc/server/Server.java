@@ -2,11 +2,13 @@ package com.wws.myrpc.server;
 
 import com.wws.myrpc.core.handler.ProtocolDecoder;
 import com.wws.myrpc.core.handler.ProtocolEncoder;
+import com.wws.myrpc.registry.RegistryProperties;
 import com.wws.myrpc.registry.RegistryService;
 import com.wws.myrpc.registry.RegistryServiceFactory;
 import com.wws.myrpc.registry.ServerInfo;
 import com.wws.myrpc.serialize.Serializer;
 import com.wws.myrpc.serialize.SerializerFactory;
+import com.wws.myrpc.serialize.SerializerProperties;
 import com.wws.myrpc.server.handler.ServerHandler;
 import com.wws.myrpc.server.locator.ServiceLocator;
 import com.wws.myrpc.spi.ExtensionLoaderFactory;
@@ -49,7 +51,7 @@ public class Server {
      * @throws Exception
      */
     public Server(int port){
-        this(port, "jdk");
+        this(port, new SerializerProperties("jdk"));
     }
 
     /**
@@ -57,22 +59,24 @@ public class Server {
      * @throws Exception
      */
     public Server(ServerProperties properties) throws Exception {
-        this(properties.getPort(), properties.getSerializerName());
+        this(properties.getPort(), properties.getSerializerProperties());
         this.properties = properties;
 
         if (properties.isRegister()) {
-            RegistryServiceFactory registryServiceFactory = ExtensionLoaderFactory.load(RegistryServiceFactory.class, properties.getRegistryName());
+            RegistryServiceFactory registryServiceFactory = ExtensionLoaderFactory.load(RegistryServiceFactory.class,
+                    properties.getRegistryProperties().getProperty(RegistryProperties.SERVER_NAME));
             this.registryService = registryServiceFactory.connect(properties.getRegistryProperties());
         }
     }
 
-    private Server(int port, String serializerName) {
+    private Server(int port, SerializerProperties serializerProperties) {
         this.port = port;
         this.serverBootstrap = new ServerBootstrap();
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
-        SerializerFactory serializerFactory = ExtensionLoaderFactory.load(SerializerFactory.class, serializerName);
-        Serializer serializer = serializerFactory.getInstance();
+        SerializerFactory serializerFactory = ExtensionLoaderFactory.load(SerializerFactory.class,
+                serializerProperties.getProperty(SerializerProperties.SERIALIZER_NAME));
+        Serializer serializer = serializerFactory.getInstance(serializerProperties);
         this.serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
@@ -91,7 +95,8 @@ public class Server {
         serverBootstrap.bind(port).sync();
         logger.info("server listen in {}", port);
         if (properties != null && properties.isRegister()) {
-            registryService.register(new ServerInfo(properties.getName(), "127.0.0.1", port, properties.getSerializerName()));
+            registryService.register(new ServerInfo(properties.getName(), "127.0.0.1", port,
+                    properties.getSerializerProperties().getProperty(SerializerProperties.SERIALIZER_NAME)));
         }
     }
 

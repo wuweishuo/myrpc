@@ -14,11 +14,15 @@ public class ExtensionLoaderFactory {
     }
 
     public static <T> T load(Class<T> clazz, String name) {
-        return ExtensionLoader.getExtensionLoader(clazz).load(name, getClassLoader());
+        return load(clazz, name, getClassLoader());
     }
 
     public static <T> T load(Class<T> clazz, String name, ClassLoader classLoader) {
         return ExtensionLoader.getExtensionLoader(clazz).load(name, classLoader);
+    }
+
+    public static <T> T load(Class<T> clazz, String name, SPIProperties properties){
+        return null;
     }
 
     private static ClassLoader getClassLoader() {

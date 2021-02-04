@@ -1,6 +1,7 @@
 package com.wws.myrpc.serialize.impl;
 
 import com.wws.myrpc.serialize.Serializer;
+import com.wws.myrpc.serialize.SerializerProperties;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,6 +15,12 @@ import java.io.IOException;
  * @date 2021-01-28
  */
 public abstract class AbstractSerializer implements Serializer {
+
+    protected SerializerProperties properties;
+
+    public AbstractSerializer(SerializerProperties properties) {
+        this.properties = properties;
+    }
 
     @Override
     public byte[] serialize(Object obj) throws IOException {

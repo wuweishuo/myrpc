@@ -2,6 +2,7 @@ package com.wws.myrpc.serialize.impl;
 
 import com.wws.myrpc.serialize.Serializer;
 import com.wws.myrpc.serialize.SerializerFactory;
+import com.wws.myrpc.serialize.SerializerProperties;
 
 /**
  * JdkSerializerFactory
@@ -14,7 +15,7 @@ public class JdkSerializerFactory implements SerializerFactory {
     private volatile JdkSerializer serializer;
 
     @Override
-    public Serializer getInstance() {
+    public Serializer getInstance(SerializerProperties properties) {
         if(serializer == null){
             synchronized (this){
                 if (serializer == null){

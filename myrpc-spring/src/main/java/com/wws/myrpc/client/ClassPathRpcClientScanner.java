@@ -1,8 +1,10 @@
 package com.wws.myrpc.client;
 
-import com.wws.myrpc.client.cluster.ClusterProperties;
+import com.wws.myrpc.client.cluster.ClusterClientProperties;
+import com.wws.myrpc.client.cluster.loadbalance.LoadBalanceProperties;
 import com.wws.myrpc.client.instance.SimpleClientProperties;
 import com.wws.myrpc.registry.RegistryProperties;
+import com.wws.myrpc.serialize.SerializerProperties;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -50,10 +52,10 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
                 String registryName = (String) annotationAttributes.get("registryName");
                 String clusterName = (String) annotationAttributes.get("clusterName");
                 String loadBalanceName = (String) annotationAttributes.get("loadBalanceName");
-                properties = new ClusterProperties(name, clusterName, loadBalanceName, registryName, new RegistryProperties(registerUrl));
+                properties = new ClusterClientProperties(name, clusterName, new LoadBalanceProperties(loadBalanceName), new RegistryProperties(registryName, registerUrl));
             }else{
                 String serializerName = (String) annotationAttributes.get("serializerName");
-                properties = new SimpleClientProperties(ip, port, serializerName);
+                properties = new SimpleClientProperties(ip, port, new SerializerProperties(serializerName));
             }
 
             beanDefinition.getPropertyValues().add("properties", properties);

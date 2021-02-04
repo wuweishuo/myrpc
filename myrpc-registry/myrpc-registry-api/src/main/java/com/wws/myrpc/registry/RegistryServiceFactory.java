@@ -9,7 +9,7 @@ import com.wws.myrpc.spi.SPI;
  * @version 1.0.0
  * @date 2020-12-26
  */
-@SPI("zookeeper")
+@SPI(value = "zookeeper", properties = RegistryProperties.class)
 public interface RegistryServiceFactory {
 
     RegistryService connect(RegistryProperties properties) throws Exception;

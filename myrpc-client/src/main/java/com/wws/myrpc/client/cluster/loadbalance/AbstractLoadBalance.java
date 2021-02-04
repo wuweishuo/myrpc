@@ -13,6 +13,12 @@ import java.util.List;
  */
 public abstract class AbstractLoadBalance implements LoadBalance {
 
+    protected LoadBalanceProperties properties;
+
+    public AbstractLoadBalance(LoadBalanceProperties properties) {
+        this.properties = properties;
+    }
+
     @Override
     public ServerInfo select(List<ServerInfo> list) {
         if (list.isEmpty()) {

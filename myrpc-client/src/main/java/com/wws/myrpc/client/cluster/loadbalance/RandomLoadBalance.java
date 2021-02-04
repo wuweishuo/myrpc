@@ -14,6 +14,11 @@ import java.util.concurrent.ThreadLocalRandom;
  * @date 2020-12-26
  */
 public class RandomLoadBalance extends AbstractLoadBalance {
+
+    public RandomLoadBalance(LoadBalanceProperties properties) {
+        super(properties);
+    }
+
     @Override
     protected ServerInfo doSelect(List<ServerInfo> list) {
         return list.get(ThreadLocalRandom.current().nextInt(list.size()));

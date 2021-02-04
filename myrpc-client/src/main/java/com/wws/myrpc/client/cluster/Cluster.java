@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  * @version 1.0.0
  * @date 2020-12-26
  */
-@SPI("failFast")
+@SPI(value = "failFast", properties = ClusterProperties.class)
 public interface Cluster {
 
     void init(String name, LoadBalance loadBalance, RegistryService registryService);

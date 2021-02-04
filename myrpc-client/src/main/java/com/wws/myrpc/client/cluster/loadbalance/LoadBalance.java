@@ -1,6 +1,7 @@
 package com.wws.myrpc.client.cluster.loadbalance;
 
 import com.wws.myrpc.registry.ServerInfo;
+import com.wws.myrpc.serialize.SerializerProperties;
 import com.wws.myrpc.spi.SPI;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * @version 1.0.0
  * @date 2020-12-26
  */
-@SPI("random")
+@SPI(value = "random", properties = SerializerProperties.class)
 public interface LoadBalance {
 
     /**
