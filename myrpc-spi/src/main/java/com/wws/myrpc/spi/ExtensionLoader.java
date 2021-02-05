@@ -2,6 +2,8 @@ package com.wws.myrpc.spi;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -28,18 +30,14 @@ public class ExtensionLoader<T> {
 
     private final Class<? extends SPIProperties> propertiesClass;
 
-    private final Class<? extends SPIFactory<T, ? extends SPIProperties>> factoryClass;
-
     private volatile Map<String, String> classMap;
 
     private final Map<String, T> instanceMap = new ConcurrentHashMap<>();
 
-    public ExtensionLoader(Class<T> clazz, String defaultName, Class<? extends SPIProperties> propertiesClass,
-                           Class<? extends SPIFactory<T, ? extends SPIProperties>> factoryClass) {
+    public ExtensionLoader(Class<T> clazz, String defaultName, Class<? extends SPIProperties> propertiesClass) {
         this.clazz = clazz;
         this.defaultName = defaultName;
         this.propertiesClass = propertiesClass;
-        this.factoryClass = factoryClass;
     }
 
     protected T load(ClassLoader classLoader) {
@@ -47,18 +45,25 @@ public class ExtensionLoader<T> {
     }
 
     protected T load(String name, ClassLoader classLoader) {
-        loadAllExtensionClass(classLoader);
-        return getExtension(name);
+        return load(name, classLoader, null);
     }
 
-    private T getExtension(String name) {
+    protected T load(String name, ClassLoader classLoader, SPIProperties properties){
+        if(propertiesClass != null && (properties == null || !propertiesClass.equals(properties.getClass()))){
+            throw new IllegalArgumentException("extension class(" + name + ") haven't properties!");
+        }
+        loadAllExtensionClass(classLoader);
+        return getExtension(name, properties);
+    }
+
+    private T getExtension(String name, SPIProperties properties) {
         T instance = instanceMap.get(name);
         if (instance == null) {
             synchronized (instanceMap) {
                 instance = instanceMap.get(name);
                 if (instance == null) {
                     try {
-                        instance = initInstance(name);
+                        instance = initInstance(name, properties);
                     } catch (Exception e) {
                         throw new IllegalStateException("extension class(" + name + ") could not be instantiated:" + e.getMessage(), e);
                     }
@@ -69,16 +74,22 @@ public class ExtensionLoader<T> {
         return instance;
     }
 
-    private <T> T initInstance(String name) throws IllegalAccessException, InstantiationException {
+    private T initInstance(String name, SPIProperties properties) throws IllegalAccessException, InstantiationException {
         String className = classMap.get(name);
         if (className == null) {
             throw new IllegalArgumentException("extension class(" + name + ") don't exist!");
         }
         try {
             Class<?> clazz = Class.forName(className);
+            if(propertiesClass != null){
+                Constructor<?> constructor = clazz.getConstructor(propertiesClass);
+                return (T) constructor.newInstance(properties);
+            }
             return (T) clazz.newInstance();
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("clazz (" + className + ") don't exist!");
+        } catch (NoSuchMethodException | InvocationTargetException e) {
+            throw new IllegalArgumentException("clazz (" + className + ") init err!", e);
         }
     }
 
@@ -134,13 +145,11 @@ public class ExtensionLoader<T> {
             throw new IllegalArgumentException("class (" + clazz + ") hasn't default name!");
         }
         Class<? extends SPIProperties> propertiesClass = annotation.properties();
-        Class<? extends SPIFactory<T, ? extends SPIProperties>> factoryClass =
-                (Class<? extends SPIFactory<T, ? extends SPIProperties>>) annotation.factory();
-        ExtensionLoader<T> extensionLoader = (ExtensionLoader<T>) LOADERS.get(clazz);
+        ExtensionLoader<?> extensionLoader = LOADERS.get(clazz);
         if (extensionLoader != null) {
-            return extensionLoader;
+            return (ExtensionLoader<T>) extensionLoader;
         }
-        LOADERS.putIfAbsent(clazz, new ExtensionLoader<>(clazz, name, propertiesClass, factoryClass));
+        LOADERS.putIfAbsent(clazz, new ExtensionLoader(clazz, name, propertiesClass));
         return (ExtensionLoader<T>) LOADERS.get(clazz);
     }
 

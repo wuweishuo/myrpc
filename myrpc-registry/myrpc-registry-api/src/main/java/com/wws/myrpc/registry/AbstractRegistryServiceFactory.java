@@ -14,6 +14,12 @@ public abstract class AbstractRegistryServiceFactory<T extends RegistryService> 
 
     private final Map<String, RegistryService> instances = new HashMap<>();
 
+    private RegistryProperties properties;
+
+    public AbstractRegistryServiceFactory(RegistryProperties properties) {
+        this.properties = properties;
+    }
+
     @Override
     public RegistryService connect(RegistryProperties properties) throws Exception {
         String url = properties.getProperty(RegistryProperties.SERVER_ADDR);
@@ -34,6 +40,7 @@ public abstract class AbstractRegistryServiceFactory<T extends RegistryService> 
 
     @Override
     public void destroy(RegistryService registryService) throws Exception {
+        instances.remove(registryService.getUrl());
         registryService.destroy();
     }
 }

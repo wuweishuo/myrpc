@@ -13,7 +13,6 @@ import com.wws.myrpc.core.protocol.Header;
 import com.wws.myrpc.core.protocol.Protocol;
 import com.wws.myrpc.core.protocol.Request;
 import com.wws.myrpc.serialize.Serializer;
-import com.wws.myrpc.serialize.SerializerFactory;
 import com.wws.myrpc.serialize.SerializerProperties;
 import com.wws.myrpc.spi.ExtensionLoaderFactory;
 import com.wws.myrpc.util.impl.UUIdGenerator;
@@ -66,9 +65,8 @@ public class SimpleClient implements Client {
     public SimpleClient(String ip, int port, SerializerProperties serializerProperties) {
         this.ip = ip;
         this.port = port;
-        SerializerFactory serializerFactory = ExtensionLoaderFactory.load(SerializerFactory.class,
-                serializerProperties.getProperty(SerializerProperties.SERIALIZER_NAME));
-        this.serializer = serializerFactory.getInstance(serializerProperties);
+        this.serializer = ExtensionLoaderFactory.load(Serializer.class,
+                serializerProperties.getProperty(SerializerProperties.SERIALIZER_NAME), serializerProperties);
 
         this.bootstrap = new Bootstrap();
         this.workerGroup = new NioEventLoopGroup();

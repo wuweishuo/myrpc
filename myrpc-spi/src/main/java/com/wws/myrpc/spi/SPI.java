@@ -26,12 +26,6 @@ public @interface SPI {
      * 配置类
      * @return
      */
-    Class<? extends SPIProperties> properties();
-
-    /**
-     * 工厂类
-     * @return
-     */
-    Class<? extends SPIFactory> factory() default SPIFactory.class;
+    Class<? extends SPIProperties> properties() default SPIProperties.class;
 
 }

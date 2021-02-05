@@ -1,5 +1,7 @@
 package com.wws.myrpc.client.cluster;
 
+import com.wws.myrpc.client.cluster.loadbalance.LoadBalance;
+import com.wws.myrpc.registry.RegistryService;
 import com.wws.myrpc.registry.ServerInfo;
 
 import java.lang.reflect.Method;
@@ -16,8 +18,8 @@ import java.util.List;
  */
 public class FailFastCluster extends AbstractCluster {
 
-    public FailFastCluster(ClusterProperties properties) {
-        super(properties);
+    public FailFastCluster(String serverName, ClusterProperties properties, LoadBalance loadBalance, RegistryService registryService) {
+        super(serverName, properties, loadBalance, registryService);
     }
 
     @Override

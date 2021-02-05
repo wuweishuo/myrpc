@@ -1,1 +1,0 @@
-kryo=com.wws.myrpc.serialize.impl.KryoSerializerFactory

@@ -34,6 +34,8 @@ public class ZookeeperRegistryService implements RegistryService {
     //服务路径
     private final String SERVER_PATH = "/server";
 
+    private final String url;
+
     private final CuratorFramework client;
 
     private Map<String, List<ServerInfo>> instanceMap;
@@ -43,7 +45,9 @@ public class ZookeeperRegistryService implements RegistryService {
     // 订阅的监听器
     private final List<NotifyListener> notifyListeners;
 
+
     public ZookeeperRegistryService(String url) throws Exception {
+        this.url = url;
         this.client = CuratorFrameworkFactory.builder()
                 .connectString(url)
                 .retryPolicy(new ExponentialBackoffRetry(1000, 3))
@@ -89,6 +93,11 @@ public class ZookeeperRegistryService implements RegistryService {
     @Override
     public void unsubscribe(String name, NotifyListener notifyListener) {
         notifyListeners.remove(notifyListener);
+    }
+
+    @Override
+    public String getUrl() {
+        return url;
     }
 
     /**

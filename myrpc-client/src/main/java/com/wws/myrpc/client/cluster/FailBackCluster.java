@@ -1,6 +1,8 @@
 package com.wws.myrpc.client.cluster;
 
+import com.wws.myrpc.client.cluster.loadbalance.LoadBalance;
 import com.wws.myrpc.core.exception.RpcException;
+import com.wws.myrpc.registry.RegistryService;
 import com.wws.myrpc.registry.ServerInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +35,11 @@ public class FailBackCluster extends AbstractCluster {
 
     private final AtomicInteger seq = new AtomicInteger();
 
-    private final ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(8, r -> new Thread(r, THREAD_PREFIX + "_" + seq.getAndIncrement()));
+    private final ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(8,
+            r -> new Thread(r, THREAD_PREFIX + "_" + seq.getAndIncrement()));
 
-    public FailBackCluster(ClusterProperties properties) {
-        super(properties);
+    public FailBackCluster(String serverName, ClusterProperties properties, LoadBalance loadBalance, RegistryService registryService) {
+        super(serverName, properties, loadBalance, registryService);
     }
 
     @Override

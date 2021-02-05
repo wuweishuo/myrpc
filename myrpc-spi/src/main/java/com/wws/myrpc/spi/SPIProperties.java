@@ -10,4 +10,5 @@ import java.util.Properties;
  * @date 2021-02-04
  */
 public class SPIProperties extends Properties {
+
 }

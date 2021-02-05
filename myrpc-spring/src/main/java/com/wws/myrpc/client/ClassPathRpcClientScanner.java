@@ -1,6 +1,7 @@
 package com.wws.myrpc.client;
 
 import com.wws.myrpc.client.cluster.ClusterClientProperties;
+import com.wws.myrpc.client.cluster.ClusterProperties;
 import com.wws.myrpc.client.cluster.loadbalance.LoadBalanceProperties;
 import com.wws.myrpc.client.instance.SimpleClientProperties;
 import com.wws.myrpc.registry.RegistryProperties;
@@ -52,7 +53,7 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
                 String registryName = (String) annotationAttributes.get("registryName");
                 String clusterName = (String) annotationAttributes.get("clusterName");
                 String loadBalanceName = (String) annotationAttributes.get("loadBalanceName");
-                properties = new ClusterClientProperties(name, clusterName, new LoadBalanceProperties(loadBalanceName), new RegistryProperties(registryName, registerUrl));
+                properties = new ClusterClientProperties(name, new ClusterProperties(clusterName), new LoadBalanceProperties(loadBalanceName), new RegistryProperties(registryName, registerUrl));
             }else{
                 String serializerName = (String) annotationAttributes.get("serializerName");
                 properties = new SimpleClientProperties(ip, port, new SerializerProperties(serializerName));

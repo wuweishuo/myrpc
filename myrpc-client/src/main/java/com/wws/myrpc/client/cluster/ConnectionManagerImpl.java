@@ -3,6 +3,7 @@ package com.wws.myrpc.client.cluster;
 import com.wws.myrpc.client.Client;
 import com.wws.myrpc.client.instance.SimpleClient;
 import com.wws.myrpc.registry.ServerInfo;
+import com.wws.myrpc.serialize.SerializerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
         for (String key : serverInfoMap.keySet()) {
             if (!clientMap.containsKey(key)) {
                 ServerInfo serverInfo = serverInfoMap.get(key);
-                SimpleClient simpleClient = new SimpleClient(serverInfo.getIp(), serverInfo.getPort(), serverInfo.getSerializerName());
+                SimpleClient simpleClient = new SimpleClient(serverInfo.getIp(), serverInfo.getPort(), new SerializerProperties(serverInfo.getSerializerName()));
                 try {
                     simpleClient.connect();
                     clientMap.putIfAbsent(key, simpleClient);

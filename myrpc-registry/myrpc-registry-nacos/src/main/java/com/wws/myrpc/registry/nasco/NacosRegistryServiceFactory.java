@@ -11,6 +11,11 @@ import com.wws.myrpc.registry.RegistryProperties;
  * @date 2021-01-31
  */
 public class NacosRegistryServiceFactory extends AbstractRegistryServiceFactory<NacosRegistryService> {
+
+    public NacosRegistryServiceFactory(RegistryProperties properties) {
+        super(properties);
+    }
+
     @Override
     public NacosRegistryService getInstance(RegistryProperties properties) throws Exception {
         return new NacosRegistryService(properties.getProperty(RegistryProperties.SERVER_ADDR));

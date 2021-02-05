@@ -7,7 +7,6 @@ import com.wws.myrpc.registry.RegistryService;
 import com.wws.myrpc.registry.RegistryServiceFactory;
 import com.wws.myrpc.registry.ServerInfo;
 import com.wws.myrpc.serialize.Serializer;
-import com.wws.myrpc.serialize.SerializerFactory;
 import com.wws.myrpc.serialize.SerializerProperties;
 import com.wws.myrpc.server.handler.ServerHandler;
 import com.wws.myrpc.server.locator.ServiceLocator;
@@ -63,8 +62,9 @@ public class Server {
         this.properties = properties;
 
         if (properties.isRegister()) {
+            RegistryProperties registryProperties = properties.getRegistryProperties();
             RegistryServiceFactory registryServiceFactory = ExtensionLoaderFactory.load(RegistryServiceFactory.class,
-                    properties.getRegistryProperties().getProperty(RegistryProperties.SERVER_NAME));
+                    registryProperties.getProperty(RegistryProperties.SERVER_NAME), registryProperties);
             this.registryService = registryServiceFactory.connect(properties.getRegistryProperties());
         }
     }
@@ -74,9 +74,8 @@ public class Server {
         this.serverBootstrap = new ServerBootstrap();
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
-        SerializerFactory serializerFactory = ExtensionLoaderFactory.load(SerializerFactory.class,
-                serializerProperties.getProperty(SerializerProperties.SERIALIZER_NAME));
-        Serializer serializer = serializerFactory.getInstance(serializerProperties);
+        Serializer serializer = ExtensionLoaderFactory.load(Serializer.class,
+                serializerProperties.getProperty(SerializerProperties.SERIALIZER_NAME), serializerProperties);
         this.serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<SocketChannel>() {

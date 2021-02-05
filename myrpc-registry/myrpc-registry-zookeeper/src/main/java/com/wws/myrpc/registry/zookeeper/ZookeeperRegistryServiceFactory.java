@@ -12,6 +12,10 @@ import com.wws.myrpc.registry.RegistryProperties;
  */
 public class ZookeeperRegistryServiceFactory extends AbstractRegistryServiceFactory<ZookeeperRegistryService> {
 
+    public ZookeeperRegistryServiceFactory(RegistryProperties properties) {
+        super(properties);
+    }
+
     @Override
     public ZookeeperRegistryService getInstance(RegistryProperties properties) throws Exception {
         return new ZookeeperRegistryService(properties.getProperty(RegistryProperties.SERVER_ADDR));

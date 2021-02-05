@@ -25,7 +25,10 @@ public class NacosRegistryService implements RegistryService {
 
     private final NamingService naming;
 
+    private final String url;
+
     public NacosRegistryService(String url) throws NacosException {
+        this.url = url;
         this.naming = NamingFactory.createNamingService(url);
     }
 
@@ -67,6 +70,11 @@ public class NacosRegistryService implements RegistryService {
         } catch (NacosException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    @Override
+    public String getUrl() {
+        return url;
     }
 
     private ServerInfo convert(Instance instance){

@@ -37,14 +37,20 @@ public class ClusterClient implements Client {
 
     public ClusterClient(ClusterClientProperties properties) throws Exception {
         this.name = properties.getName();
+
         LoadBalanceProperties loadBalanceProperties = properties.getLoadBalanceProperties();
-        RegistryProperties registryProperties = properties.getRegistryProperties();
         LoadBalance loadBalance = ExtensionLoaderFactory.load(LoadBalance.class,
-                loadBalanceProperties.getProperty(LoadBalanceProperties.LOAD_BALANCE_ADDR));
+                loadBalanceProperties.getProperty(LoadBalanceProperties.LOAD_BALANCE_ADDR), loadBalanceProperties);
+
+        RegistryProperties registryProperties = properties.getRegistryProperties();
         RegistryServiceFactory registryServiceFactory = ExtensionLoaderFactory.load(RegistryServiceFactory.class,
-                registryProperties.getProperty(RegistryProperties.SERVER_NAME));
+                registryProperties.getProperty(RegistryProperties.SERVER_NAME), registryProperties);
         RegistryService registryService = registryServiceFactory.connect(properties.getRegistryProperties());
-        this.cluster = ClusterFactory.getInstance(properties.getClusterName(), name, loadBalance, registryService);
+
+        ClusterProperties clusterProperties = properties.getClusterProperties();
+        ClusterBuilder clusterBuilder = ExtensionLoaderFactory.load(ClusterBuilder.class,
+                clusterProperties.getProperty(ClusterProperties.CLUSTER_NAME), clusterProperties);
+        this.cluster = clusterBuilder.with(loadBalance).with(registryService).with(name).build();
     }
 
     @Override

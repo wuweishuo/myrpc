@@ -15,15 +15,15 @@ public class ClusterClientProperties implements ClientProperties {
 
     private String name;
 
-    private String clusterName;
+    private ClusterProperties clusterProperties;
 
     private LoadBalanceProperties loadBalanceProperties;
 
     private RegistryProperties registryProperties;
 
-    public ClusterClientProperties(String name, String clusterName, LoadBalanceProperties loadBalanceProperties, RegistryProperties registryProperties) {
+    public ClusterClientProperties(String name, ClusterProperties clusterProperties, LoadBalanceProperties loadBalanceProperties, RegistryProperties registryProperties) {
         this.name = name;
-        this.clusterName = clusterName;
+        this.clusterProperties = clusterProperties;
         this.loadBalanceProperties = loadBalanceProperties;
         this.registryProperties = registryProperties;
     }
@@ -36,12 +36,12 @@ public class ClusterClientProperties implements ClientProperties {
         this.name = name;
     }
 
-    public String getClusterName() {
-        return clusterName;
+    public ClusterProperties getClusterProperties() {
+        return clusterProperties;
     }
 
-    public void setClusterName(String clusterName) {
-        this.clusterName = clusterName;
+    public void setClusterProperties(ClusterProperties clusterProperties) {
+        this.clusterProperties = clusterProperties;
     }
 
     public LoadBalanceProperties getLoadBalanceProperties() {

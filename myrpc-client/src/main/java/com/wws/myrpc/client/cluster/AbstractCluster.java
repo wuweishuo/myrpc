@@ -24,42 +24,39 @@ public abstract class AbstractCluster implements Cluster {
     /**
      * 服务名
      */
-    private String name;
+    private final String serverName;
 
     /**
      * 负载均衡器
      */
-    private LoadBalance loadBalance;
+    private final LoadBalance loadBalance;
 
     /**
      * 注册中心
      */
-    private RegistryService registryService;
+    private final RegistryService registryService;
 
     /**
      * 注册中心监听器
      */
-    private MyrpcNotifyListener notifyListener;
+    private final MyrpcNotifyListener notifyListener;
 
     /**
      * client连接管理器
      */
-    private ConnectionManager connectionManager;
+    private final ConnectionManager connectionManager;
 
-    protected ClusterProperties properties;
+    protected final ClusterProperties properties;
 
-    public AbstractCluster(ClusterProperties properties) {
+    public AbstractCluster(String serverName, ClusterProperties properties, LoadBalance loadBalance, RegistryService registryService) {
+        this.serverName = serverName;
         this.properties = properties;
-    }
-
-    @Override
-    public void init(String name, LoadBalance loadBalance, RegistryService registryService) {
         this.loadBalance = loadBalance;
         this.registryService = registryService;
-        this.name = name;
+
         this.notifyListener = new MyrpcNotifyListener();
         this.connectionManager = new ConnectionManagerImpl();
-        registryService.subscribe(name, notifyListener);
+        registryService.subscribe(serverName, notifyListener);
     }
 
     @Override
@@ -73,7 +70,7 @@ public abstract class AbstractCluster implements Cluster {
     public ServerInfo doSelect(List<ServerInfo> serverInfos, List<ServerInfo> selected) throws RpcException {
         ServerInfo serverInfo = getLoadBalance().select(serverInfos);
         if (serverInfo == null) {
-            throw new RpcException("server not found:" + getName());
+            throw new RpcException("server not found:" + getServerName());
         }
         if(serverInfos.size() == selected.size()){
             return serverInfo;
@@ -90,7 +87,7 @@ public abstract class AbstractCluster implements Cluster {
 
     @Override
     public void shutdown() throws Exception {
-        registryService.unsubscribe(name, notifyListener);
+        registryService.unsubscribe(serverName, notifyListener);
         registryService.destroy();
         connectionManager.shutdown();
     }
@@ -108,8 +105,8 @@ public abstract class AbstractCluster implements Cluster {
         return loadBalance;
     }
 
-    protected String getName() {
-        return name;
+    protected String getServerName() {
+        return serverName;
     }
 
     protected Client getClient(ServerInfo serverInfo) {
@@ -128,7 +125,7 @@ public abstract class AbstractCluster implements Cluster {
 
         @Override
         public String name() {
-            return name;
+            return serverName;
         }
 
         public List<ServerInfo> getList() {

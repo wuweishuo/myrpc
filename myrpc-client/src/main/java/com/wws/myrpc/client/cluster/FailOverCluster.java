@@ -1,5 +1,7 @@
 package com.wws.myrpc.client.cluster;
 
+import com.wws.myrpc.client.cluster.loadbalance.LoadBalance;
+import com.wws.myrpc.registry.RegistryService;
 import com.wws.myrpc.registry.ServerInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +23,8 @@ public class FailOverCluster extends AbstractCluster {
 
     private static final int DEFAULT_RETRY = 3;
 
-    public FailOverCluster(ClusterProperties properties) {
-        super(properties);
+    public FailOverCluster(String serverName, ClusterProperties properties, LoadBalance loadBalance, RegistryService registryService) {
+        super(serverName, properties, loadBalance, registryService);
     }
 
     @Override

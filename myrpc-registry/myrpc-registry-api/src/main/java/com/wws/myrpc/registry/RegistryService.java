@@ -48,4 +48,6 @@ public interface RegistryService {
      */
     void unsubscribe(String name, NotifyListener notifyListener);
 
+    String getUrl();
+
 }
