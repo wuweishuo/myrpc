@@ -94,6 +94,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.wws</groupId>
                 <artifactId>myrpc-registry-api</artifactId>
                 <version>${project.version}</version>

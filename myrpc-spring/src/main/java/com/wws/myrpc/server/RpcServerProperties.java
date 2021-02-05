@@ -1,8 +1,9 @@
 package com.wws.myrpc.server;
 
-import com.wws.myrpc.registry.RegistryProperties;
-import com.wws.myrpc.serialize.SerializerProperties;
+import com.wws.myrpc.RpcRegistryProperties;
+import com.wws.myrpc.RpcSerializerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 @ConfigurationProperties(prefix = "myrpc.server")
 public class RpcServerProperties {
@@ -13,14 +14,14 @@ public class RpcServerProperties {
 
     private String name;
 
-    private String registryName;
+    @NestedConfigurationProperty
+    private RpcRegistryProperties registry;
 
-    private String registerUri;
-
-    private String serializerName;
+    @NestedConfigurationProperty
+    private RpcSerializerProperties serializer;
 
     protected ServerProperties getServerProperties(){
-        return new ServerProperties(port, name, register, new RegistryProperties(registryName, registerUri), new SerializerProperties(serializerName));
+        return new ServerProperties(port, name, register, registry.toProperties(), serializer.toProperties());
     }
 
     public Integer getPort() {
@@ -31,15 +32,7 @@ public class RpcServerProperties {
         this.port = port;
     }
 
-    public String getRegisterUri() {
-        return registerUri;
-    }
-
-    public void setRegisterUri(String registerUri) {
-        this.registerUri = registerUri;
-    }
-
-    public boolean getRegister() {
+    public boolean isRegister() {
         return register;
     }
 
@@ -55,23 +48,19 @@ public class RpcServerProperties {
         this.name = name;
     }
 
-    public boolean isRegister() {
-        return register;
+    public RpcRegistryProperties getRegistry() {
+        return registry;
     }
 
-    public String getRegistryName() {
-        return registryName;
+    public void setRegistry(RpcRegistryProperties registry) {
+        this.registry = registry;
     }
 
-    public void setRegistryName(String registryName) {
-        this.registryName = registryName;
+    public RpcSerializerProperties getSerializer() {
+        return serializer;
     }
 
-    public String getSerializerName() {
-        return serializerName;
-    }
-
-    public void setSerializerName(String serializerName) {
-        this.serializerName = serializerName;
+    public void setSerializer(RpcSerializerProperties serializer) {
+        this.serializer = serializer;
     }
 }

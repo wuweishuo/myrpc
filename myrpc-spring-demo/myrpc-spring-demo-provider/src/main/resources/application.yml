@@ -1,11 +1,13 @@
 myrpc:
   server:
+    name: user-service
     port: 9000
     register: true
-    name: user-service
-    registerUri: 127.0.0.1:2181
-    registryName: zookeeper
-    serializerName: fst
+    registry:
+      name: zookeeper
+      url: 127.0.0.1:2181
+    serializer:
+      name: fst
 
 server:
   port: 8081

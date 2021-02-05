@@ -1,0 +1,15 @@
+myrpc:
+  client:
+    global:
+      registry:
+        name: zookeeper
+        url: 127.0.0.1:2181
+      serializer:
+        name: fst
+      loadBalance:
+        name: random
+      cluster:
+        name: failOver
+
+server:
+  port: 8080

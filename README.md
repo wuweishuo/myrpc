@@ -102,7 +102,7 @@ public class ConsumerApplication {
 
 }
 
-@RpcClient(name = "user-service", registerUrl = "127.0.0.1:2181")
+@RpcClient(name = "user-service")
 public interface UserClient extends UserService {
 }
 ```

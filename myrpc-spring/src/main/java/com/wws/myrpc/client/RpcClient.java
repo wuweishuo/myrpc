@@ -13,14 +13,12 @@ public @interface RpcClient {
 
     String name() default "";
 
-    String registryName() default "zookeeper";
+    String clusterBean() default "";
 
-    String registerUrl() default "";
+    String loadBalanceBean() default "";
 
-    String clusterName() default "failFast";
+    String serializerBean() default "";
 
-    String loadBalanceName() default "random";
-
-    String serializerName() default "jdk";
+    String registryBean() default "";
 
 }
