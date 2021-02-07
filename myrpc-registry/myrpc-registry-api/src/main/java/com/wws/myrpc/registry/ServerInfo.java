@@ -2,6 +2,7 @@ package com.wws.myrpc.registry;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * ServerInfo
@@ -34,25 +35,19 @@ public class ServerInfo {
     private boolean enable;
 
     /**
-     * 序列化方式
-     */
-    private String serializerName;
-
-    /**
      * 额外信息
      */
     private final Map<String, String> metaData;
 
-    public ServerInfo(String name, String ip, Integer port, String serializerName) {
-        this(name, ip, port, true, serializerName);
+    public ServerInfo(String name, String ip, Integer port) {
+        this(name, ip, port, true);
     }
 
-    public ServerInfo(String name, String ip, Integer port, boolean enable, String serializerName) {
+    public ServerInfo(String name, String ip, Integer port, boolean enable) {
         this.name = name;
         this.ip = ip;
         this.port = port;
         this.enable = enable;
-        this.serializerName = serializerName;
         this.metaData = new HashMap<>();
     }
 
@@ -92,19 +87,15 @@ public class ServerInfo {
         this.enable = enable;
     }
 
-    public String getSerializerName() {
-        return serializerName;
-    }
-
-    public void setSerializerName(String serializerName) {
-        this.serializerName = serializerName;
-    }
-
-    public void setProperties(String key, String value){
+    public void setProperty(String key, String value){
         metaData.put(key, value);
     }
 
-    public String getProperties(String key){
+    public String getProperty(String key){
         return metaData.get(key);
+    }
+
+    public Map<String, String> getMetaData() {
+        return metaData;
     }
 }

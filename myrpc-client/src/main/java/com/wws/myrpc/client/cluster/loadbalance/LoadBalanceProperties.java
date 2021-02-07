@@ -11,10 +11,9 @@ import com.wws.myrpc.spi.SPIProperties;
  */
 public class LoadBalanceProperties extends SPIProperties {
 
-    public static final String LOAD_BALANCE_ADDR = "server.addr";
-
     public LoadBalanceProperties(String name) {
-        setProperty(LOAD_BALANCE_ADDR, name);
+        super("loadbalance");
+        setName(name);
     }
 
 }

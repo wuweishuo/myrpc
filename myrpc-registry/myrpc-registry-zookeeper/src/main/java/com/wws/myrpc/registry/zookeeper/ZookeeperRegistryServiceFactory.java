@@ -18,6 +18,6 @@ public class ZookeeperRegistryServiceFactory extends AbstractRegistryServiceFact
 
     @Override
     public ZookeeperRegistryService getInstance(RegistryProperties properties) throws Exception {
-        return new ZookeeperRegistryService(properties.getProperty(RegistryProperties.SERVER_ADDR));
+        return new ZookeeperRegistryService(properties.getUrl());
     }
 }

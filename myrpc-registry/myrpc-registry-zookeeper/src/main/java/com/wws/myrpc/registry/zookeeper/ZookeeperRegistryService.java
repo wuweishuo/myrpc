@@ -108,7 +108,7 @@ public class ZookeeperRegistryService implements RegistryService {
      */
     private String toPath(ServerInfo serverInfo) {
         URL url = new URL("myrpc", serverInfo.getIp(), serverInfo.getPort(), serverInfo.getName());
-        url.addParameter("serializerName", serverInfo.getSerializerName());
+        url.addParameters(serverInfo.getMetaData());
         try {
             return URLEncoder.encode(url.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -121,7 +121,11 @@ public class ZookeeperRegistryService implements RegistryService {
         try {
             path = URLDecoder.decode(path, "UTF-8");
             URL url = new URL(path);
-            return new ServerInfo(url.getPath(), url.getIp(), url.getPort(), url.getParameter("serializerName"));
+            ServerInfo serverInfo = new ServerInfo(url.getPath(), url.getIp(), url.getPort());
+            for (String parameterKey : url.parameterKeys()) {
+                serverInfo.setProperty(parameterKey, url.getParameter(parameterKey));
+            }
+            return serverInfo;
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -187,9 +191,9 @@ public class ZookeeperRegistryService implements RegistryService {
 
         private void loadParameter(String parameters){
             String[] strs = parameters.split("&");
+            map = new HashMap<>(strs.length);
             for (String str : strs) {
                 String[] arr = str.split("=");
-                map = new HashMap<>(arr.length);
                 map.put(arr[0].trim(), arr[1].trim());
             }
         }
@@ -210,12 +214,20 @@ public class ZookeeperRegistryService implements RegistryService {
             return path;
         }
 
+        public void addParameters(Map<String, String> map){
+            this.map.putAll(map);
+        }
+
         public void addParameter(String key, String value){
             map.put(key, value);
         }
 
         public String getParameter(String key){
             return map.get(key);
+        }
+
+        public Set<String> parameterKeys(){
+            return map.keySet();
         }
 
         @Override

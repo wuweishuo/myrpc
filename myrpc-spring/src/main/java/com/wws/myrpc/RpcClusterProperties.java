@@ -18,7 +18,9 @@ public class RpcClusterProperties {
     private Map<String, String> props;
 
     public ClusterProperties toProperties(){
-        return new ClusterProperties(name);
+        ClusterProperties properties = new ClusterProperties(name);
+        properties.setProperties(props);
+        return properties;
     }
 
     public String getName() {

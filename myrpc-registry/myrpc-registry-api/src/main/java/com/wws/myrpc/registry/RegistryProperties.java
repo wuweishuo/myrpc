@@ -11,12 +11,15 @@ import com.wws.myrpc.spi.SPIProperties;
  */
 public class RegistryProperties extends SPIProperties {
 
-    public static final String SERVER_NAME = "registry.name";
-
-    public static final String SERVER_ADDR = "registry.addr";
+    private static final String URL = "url";
 
     public RegistryProperties(String name, String url) {
-        setProperty(SERVER_NAME, name);
-        setProperty(SERVER_ADDR, url);
+        super("registry");
+        setName(name);
+        setProperty(URL, url);
+    }
+
+    public String getUrl() {
+        return getProperty(URL);
     }
 }

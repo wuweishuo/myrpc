@@ -11,10 +11,9 @@ import com.wws.myrpc.spi.SPIProperties;
  */
 public class SerializerProperties extends SPIProperties {
 
-    public static final String SERIALIZER_NAME = "serializer.name";
-
     public SerializerProperties(String name) {
-        setProperty(SERIALIZER_NAME, name);
+        super("serializer");
+        setName(name);
     }
 
 }

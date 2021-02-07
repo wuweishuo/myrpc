@@ -11,10 +11,9 @@ import com.wws.myrpc.spi.SPIProperties;
  */
 public class ClusterProperties extends SPIProperties {
 
-    public static final String CLUSTER_NAME = "cluster.name";
-
     public ClusterProperties(String name) {
-        setProperty(CLUSTER_NAME, name);
+        super("cluster");
+        setName(name);
     }
 
 }

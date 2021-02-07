@@ -78,17 +78,19 @@ public class NacosRegistryService implements RegistryService {
     }
 
     private ServerInfo convert(Instance instance){
+        ServerInfo serverInfo = new ServerInfo(instance.getServiceName(), instance.getIp(), instance.getPort(), instance.isEnabled());
         Map<String, String> metadata = instance.getMetadata();
-        String serializerName = metadata.get("serializerName");
-        return new ServerInfo(instance.getServiceName(), instance.getIp(), instance.getPort(), instance.isEnabled(), serializerName);
+        for (String key : metadata.keySet()) {
+            serverInfo.setProperty(key, metadata.get(key));
+        }
+        return serverInfo;
     }
 
     private Instance convert(ServerInfo serverInfo){
         Instance instance = new Instance();
         instance.setIp(serverInfo.getIp());
         instance.setPort(serverInfo.getPort());
-        Map<String, String> instanceMeta = new HashMap<>();
-        instanceMeta.put("serializerName", serverInfo.getSerializerName());
+        Map<String, String> instanceMeta = new HashMap<>(serverInfo.getMetaData());
         instance.setMetadata(instanceMeta);
         return instance;
     }

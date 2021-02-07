@@ -20,6 +20,8 @@ import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 /**
  * Server
  * 服务端
@@ -64,7 +66,7 @@ public class Server {
         if (properties.isRegister()) {
             RegistryProperties registryProperties = properties.getRegistryProperties();
             RegistryServiceFactory registryServiceFactory = ExtensionLoaderFactory.load(RegistryServiceFactory.class,
-                    registryProperties.getProperty(RegistryProperties.SERVER_NAME), registryProperties);
+                    registryProperties.getName(), registryProperties);
             this.registryService = registryServiceFactory.connect(properties.getRegistryProperties());
         }
     }
@@ -75,7 +77,7 @@ public class Server {
         this.bossGroup = new NioEventLoopGroup();
         this.workerGroup = new NioEventLoopGroup();
         Serializer serializer = ExtensionLoaderFactory.load(Serializer.class,
-                serializerProperties.getProperty(SerializerProperties.SERIALIZER_NAME), serializerProperties);
+                serializerProperties.getName(), serializerProperties);
         this.serverBootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
@@ -94,8 +96,12 @@ public class Server {
         serverBootstrap.bind(port).sync();
         logger.info("server listen in {}", port);
         if (properties != null && properties.isRegister()) {
-            registryService.register(new ServerInfo(properties.getName(), "127.0.0.1", port,
-                    properties.getSerializerProperties().getProperty(SerializerProperties.SERIALIZER_NAME)));
+            SerializerProperties serializerProperties = properties.getSerializerProperties();
+            ServerInfo serverInfo = new ServerInfo(properties.getName(), "127.0.0.1", port);
+            for (Map.Entry<String, String> property : serializerProperties) {
+                serverInfo.setProperty(property.getKey(), property.getValue());
+            }
+            registryService.register(serverInfo);
         }
     }
 

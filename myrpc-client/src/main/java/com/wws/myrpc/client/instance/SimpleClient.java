@@ -66,7 +66,7 @@ public class SimpleClient implements Client {
         this.ip = ip;
         this.port = port;
         this.serializer = ExtensionLoaderFactory.load(Serializer.class,
-                serializerProperties.getProperty(SerializerProperties.SERIALIZER_NAME), serializerProperties);
+                serializerProperties.getName(), serializerProperties);
 
         this.bootstrap = new Bootstrap();
         this.workerGroup = new NioEventLoopGroup();

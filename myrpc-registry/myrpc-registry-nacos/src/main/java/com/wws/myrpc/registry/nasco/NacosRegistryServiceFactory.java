@@ -18,6 +18,6 @@ public class NacosRegistryServiceFactory extends AbstractRegistryServiceFactory<
 
     @Override
     public NacosRegistryService getInstance(RegistryProperties properties) throws Exception {
-        return new NacosRegistryService(properties.getProperty(RegistryProperties.SERVER_ADDR));
+        return new NacosRegistryService(properties.getUrl());
     }
 }

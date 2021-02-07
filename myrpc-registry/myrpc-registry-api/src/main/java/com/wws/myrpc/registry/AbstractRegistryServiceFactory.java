@@ -22,7 +22,7 @@ public abstract class AbstractRegistryServiceFactory<T extends RegistryService> 
 
     @Override
     public RegistryService connect(RegistryProperties properties) throws Exception {
-        String url = properties.getProperty(RegistryProperties.SERVER_ADDR);
+        String url = properties.getUrl();
         RegistryService registryService = instances.get(url);
         if(registryService == null){
             synchronized (this){

@@ -48,7 +48,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
         for (String key : serverInfoMap.keySet()) {
             if (!clientMap.containsKey(key)) {
                 ServerInfo serverInfo = serverInfoMap.get(key);
-                SimpleClient simpleClient = new SimpleClient(serverInfo.getIp(), serverInfo.getPort(), new SerializerProperties(serverInfo.getSerializerName()));
+                SimpleClient simpleClient = new SimpleClient(serverInfo.getIp(), serverInfo.getPort(), getSerializerProperties(serverInfo));
                 try {
                     simpleClient.connect();
                     clientMap.putIfAbsent(key, simpleClient);
@@ -68,6 +68,13 @@ public class ConnectionManagerImpl implements ConnectionManager {
             }
         }
         clientMap = new HashMap<>();
+    }
+
+    private SerializerProperties getSerializerProperties(ServerInfo serverInfo){
+        // 给个默认值，会从serverInfo中覆盖
+        SerializerProperties serializerProperties = new SerializerProperties("jdk");
+        serializerProperties.clone(serverInfo.getMetaData());
+        return serializerProperties;
     }
 
 }
