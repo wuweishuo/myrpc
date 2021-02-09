@@ -66,7 +66,8 @@ public class NacosRegistryService implements RegistryService {
     @Override
     public void unsubscribe(String name, NotifyListener notifyListener) {
         try {
-            naming.unsubscribe(name, event -> {});
+            naming.unsubscribe(name, event -> {
+            });
         } catch (NacosException e) {
             throw new IllegalStateException(e);
         }
@@ -77,7 +78,7 @@ public class NacosRegistryService implements RegistryService {
         return url;
     }
 
-    private ServerInfo convert(Instance instance){
+    private ServerInfo convert(Instance instance) {
         ServerInfo serverInfo = new ServerInfo(instance.getServiceName(), instance.getIp(), instance.getPort(), instance.isEnabled());
         Map<String, String> metadata = instance.getMetadata();
         for (String key : metadata.keySet()) {
@@ -86,7 +87,7 @@ public class NacosRegistryService implements RegistryService {
         return serverInfo;
     }
 
-    private Instance convert(ServerInfo serverInfo){
+    private Instance convert(ServerInfo serverInfo) {
         Instance instance = new Instance();
         instance.setIp(serverInfo.getIp());
         instance.setPort(serverInfo.getPort());

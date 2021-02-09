@@ -18,20 +18,20 @@
         <module>myrpc-serialize-kryo</module>
     </modules>
 
-   <dependencyManagement>
-       <dependencies>
-           <dependency>
-               <groupId>com.wws</groupId>
-               <artifactId>myrpc-serialize-api</artifactId>
-               <version>${project.version}</version>
-           </dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.wws</groupId>
+                <artifactId>myrpc-serialize-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-           <dependency>
-               <groupId>com.wws</groupId>
-               <artifactId>myrpc-spi</artifactId>
-               <version>${project.version}</version>
-           </dependency>
-       </dependencies>
-   </dependencyManagement>
+            <dependency>
+                <groupId>com.wws</groupId>
+                <artifactId>myrpc-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

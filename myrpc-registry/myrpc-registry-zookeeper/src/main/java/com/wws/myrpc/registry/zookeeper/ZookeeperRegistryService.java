@@ -151,7 +151,7 @@ public class ZookeeperRegistryService implements RegistryService {
         }
     }
 
-    private static class URL{
+    private static class URL {
 
         private Map<String, String> map;
 
@@ -171,15 +171,15 @@ public class ZookeeperRegistryService implements RegistryService {
             this.map = new HashMap<>();
         }
 
-        URL(String url){
-            String[] strs= url.split("\\?");
+        URL(String url) {
+            String[] strs = url.split("\\?");
             load(strs[0]);
-            if(strs.length > 1){
+            if (strs.length > 1) {
                 loadParameter(strs[1]);
             }
         }
 
-        private void load(String url){
+        private void load(String url) {
             String[] strs = url.split("://");
             scheme = strs[0];
             strs = strs[1].split("/");
@@ -189,7 +189,7 @@ public class ZookeeperRegistryService implements RegistryService {
             port = Integer.parseInt(strs[1]);
         }
 
-        private void loadParameter(String parameters){
+        private void loadParameter(String parameters) {
             String[] strs = parameters.split("&");
             map = new HashMap<>(strs.length);
             for (String str : strs) {
@@ -214,19 +214,19 @@ public class ZookeeperRegistryService implements RegistryService {
             return path;
         }
 
-        public void addParameters(Map<String, String> map){
+        public void addParameters(Map<String, String> map) {
             this.map.putAll(map);
         }
 
-        public void addParameter(String key, String value){
+        public void addParameter(String key, String value) {
             map.put(key, value);
         }
 
-        public String getParameter(String key){
+        public String getParameter(String key) {
             return map.get(key);
         }
 
-        public Set<String> parameterKeys(){
+        public Set<String> parameterKeys() {
             return map.keySet();
         }
 

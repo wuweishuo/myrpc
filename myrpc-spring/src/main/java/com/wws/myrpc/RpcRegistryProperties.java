@@ -1,6 +1,5 @@
 package com.wws.myrpc;
 
-import com.wws.myrpc.client.cluster.ClusterProperties;
 import com.wws.myrpc.registry.RegistryProperties;
 
 import java.util.Map;
@@ -20,7 +19,7 @@ public class RpcRegistryProperties {
 
     private Map<String, String> props;
 
-    public RegistryProperties toProperties(){
+    public RegistryProperties toProperties() {
         RegistryProperties properties = new RegistryProperties(name, url);
         properties.setProperties(props);
         return properties;

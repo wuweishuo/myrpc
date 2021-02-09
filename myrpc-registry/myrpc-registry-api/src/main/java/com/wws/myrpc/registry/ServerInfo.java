@@ -2,7 +2,6 @@ package com.wws.myrpc.registry;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * ServerInfo
@@ -87,11 +86,11 @@ public class ServerInfo {
         this.enable = enable;
     }
 
-    public void setProperty(String key, String value){
+    public void setProperty(String key, String value) {
         metaData.put(key, value);
     }
 
-    public String getProperty(String key){
+    public String getProperty(String key) {
         return metaData.get(key);
     }
 

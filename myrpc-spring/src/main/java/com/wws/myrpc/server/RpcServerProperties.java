@@ -20,7 +20,7 @@ public class RpcServerProperties {
     @NestedConfigurationProperty
     private RpcSerializerProperties serializer;
 
-    protected ServerProperties getServerProperties(){
+    protected ServerProperties getServerProperties() {
         return new ServerProperties(port, name, register, registry.toProperties(), serializer.toProperties());
     }
 

@@ -16,6 +16,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.StringUtils;
 
+import java.util.Map;
+
 public class RpcClientFactoryBean<T> implements FactoryBean<T>, DisposableBean, ApplicationContextAware {
 
     private Class<T> clientClass;
@@ -23,14 +25,6 @@ public class RpcClientFactoryBean<T> implements FactoryBean<T>, DisposableBean, 
     private ProxyFactory proxyFactory;
 
     private Client client;
-
-    private String clusterBean;
-
-    private String loadBalanceBean;
-
-    private String serializerBean;
-
-    private String registryBean;
 
     private String ip;
 
@@ -42,27 +36,33 @@ public class RpcClientFactoryBean<T> implements FactoryBean<T>, DisposableBean, 
 
     @Override
     public T getObject() throws Exception {
-        GlobalClientProperties globalClientProperties = applicationContext.getBean(GlobalClientProperties.class);
-        if(StringUtils.isEmpty(ip) || port == 0){
-            RpcClusterProperties clusterProperties = globalClientProperties.getCluster();
-            if(StringUtils.hasText(clusterBean)){
-                clusterProperties = applicationContext.getBean(clusterBean, RpcClusterProperties.class);
+        RpcClientProperties rpcClientProperties = applicationContext.getBean(RpcClientProperties.class);
+        RpcInstanceProperties global = rpcClientProperties.getGlobal();
+        Map<String, RpcInstanceProperties> instances = rpcClientProperties.getInstances();
+        RpcInstanceProperties instance = instances.get(name);
+        if (StringUtils.isEmpty(ip) || port == 0) {
+            RpcClusterProperties cluster = global.getCluster();
+            RpcLoadBalanceProperties loadBalance = global.getLoadBalance();
+            RpcRegistryProperties registry = global.getRegistry();
+            if (instance != null) {
+                if (instance.getCluster() != null) {
+                    cluster = instance.getCluster();
+                }
+                if (instance.getLoadBalance() != null) {
+                    loadBalance = instance.getLoadBalance();
+                }
+                if (instance.getRegistry() != null) {
+                    registry = instance.getRegistry();
+                }
             }
-            RpcLoadBalanceProperties loadBalance = globalClientProperties.getLoadBalance();
-            if(StringUtils.hasText(loadBalanceBean)){
-                loadBalance = applicationContext.getBean(loadBalanceBean, RpcLoadBalanceProperties.class);
+            client = new ClusterClient(new ClusterClientProperties(name, cluster.toProperties(), loadBalance.toProperties(), registry.toProperties()));
+        } else {
+            RpcSerializerProperties serializerProperties = global.getSerializer();
+            RpcSerializerProperties serializer = global.getSerializer();
+            if (instance != null && instance.getSerializer() != null) {
+                serializer = instance.getSerializer();
             }
-            RpcRegistryProperties registry = globalClientProperties.getRegistry();
-            if(StringUtils.hasText(registryBean)){
-                registry = applicationContext.getBean(registryBean, RpcRegistryProperties.class);
-            }
-            client = new ClusterClient(new ClusterClientProperties(name, clusterProperties.toProperties(), loadBalance.toProperties(), registry.toProperties()));
-        }else{
-            RpcSerializerProperties serializerProperties = globalClientProperties.getSerializer();
-            if(StringUtils.hasText(serializerBean)){
-                serializerProperties = applicationContext.getBean(serializerBean, RpcSerializerProperties.class);
-            }
-            client = new SimpleClient(new SimpleClientProperties(ip, port, serializerProperties.toProperties()));
+            client = new SimpleClient(new SimpleClientProperties(ip, port, serializer.toProperties()));
         }
         return proxyFactory.getProxy(client, clientClass);
     }
@@ -104,38 +104,6 @@ public class RpcClientFactoryBean<T> implements FactoryBean<T>, DisposableBean, 
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    public String getClusterBean() {
-        return clusterBean;
-    }
-
-    public void setClusterBean(String clusterBean) {
-        this.clusterBean = clusterBean;
-    }
-
-    public String getLoadBalanceBean() {
-        return loadBalanceBean;
-    }
-
-    public void setLoadBalanceBean(String loadBalanceBean) {
-        this.loadBalanceBean = loadBalanceBean;
-    }
-
-    public String getSerializerBean() {
-        return serializerBean;
-    }
-
-    public void setSerializerBean(String serializerBean) {
-        this.serializerBean = serializerBean;
-    }
-
-    public String getRegistryBean() {
-        return registryBean;
-    }
-
-    public void setRegistryBean(String registryBean) {
-        this.registryBean = registryBean;
     }
 
     public String getIp() {

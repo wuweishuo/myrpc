@@ -1,6 +1,5 @@
 package com.wws.myrpc;
 
-import com.wws.myrpc.client.cluster.ClusterProperties;
 import com.wws.myrpc.client.cluster.loadbalance.LoadBalanceProperties;
 
 import java.util.Map;
@@ -18,7 +17,7 @@ public class RpcLoadBalanceProperties {
 
     private Map<String, String> props;
 
-    public LoadBalanceProperties toProperties(){
+    public LoadBalanceProperties toProperties() {
         LoadBalanceProperties properties = new LoadBalanceProperties(name);
         properties.setProperties(props);
         return properties;

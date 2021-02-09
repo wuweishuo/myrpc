@@ -4,18 +4,16 @@ import com.wws.myrpc.RpcClusterProperties;
 import com.wws.myrpc.RpcLoadBalanceProperties;
 import com.wws.myrpc.RpcRegistryProperties;
 import com.wws.myrpc.RpcSerializerProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
- * GlobalProperties
+ * RpcInstanceProperties
  *
  * @author wuweishuo
  * @version 1.0.0
- * @date 2021-02-05
+ * @date 2021-02-08
  */
-@ConfigurationProperties(prefix = "myrpc.client.global")
-public class GlobalClientProperties {
+public class RpcInstanceProperties {
 
     @NestedConfigurationProperty
     private RpcRegistryProperties registry;
@@ -60,4 +58,5 @@ public class GlobalClientProperties {
     public void setCluster(RpcClusterProperties cluster) {
         this.cluster = cluster;
     }
+
 }

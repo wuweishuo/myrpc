@@ -72,13 +72,13 @@ public abstract class AbstractCluster implements Cluster {
         if (serverInfo == null) {
             throw new RpcException("server not found:" + getServerName());
         }
-        if(serverInfos.size() == selected.size()){
+        if (serverInfos.size() == selected.size()) {
             return serverInfo;
         }
-        if(selected.contains(serverInfo)){
+        if (selected.contains(serverInfo)) {
             List<ServerInfo> reselect = serverInfos.stream().filter(s -> !selected.contains(s)).collect(Collectors.toList());
             ServerInfo reselectInfo = getLoadBalance().select(reselect);
-            if(reselectInfo != null){
+            if (reselectInfo != null) {
                 return reselectInfo;
             }
         }

@@ -51,12 +51,12 @@ public class Server {
      * @param port 端口
      * @throws Exception
      */
-    public Server(int port){
+    public Server(int port) {
         this(port, new SerializerProperties("jdk"));
     }
 
     /**
-     * @param properties        ServerProperties
+     * @param properties ServerProperties
      * @throws Exception
      */
     public Server(ServerProperties properties) throws Exception {
@@ -106,7 +106,7 @@ public class Server {
     }
 
     public void shutdown() throws Exception {
-        if(properties.isRegister()){
+        if (properties.isRegister()) {
             registryService.destroy();
         }
         if (bossGroup != null) {

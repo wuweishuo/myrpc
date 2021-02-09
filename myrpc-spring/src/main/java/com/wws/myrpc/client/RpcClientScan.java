@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({RpcClientScannerRegistrar.class, GlobalClientProperties.class})
+@Import({RpcClientScannerRegistrar.class, RpcClientProperties.class})
 public @interface RpcClientScan {
 
     @AliasFor("basePackages")

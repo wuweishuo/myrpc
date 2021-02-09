@@ -70,7 +70,7 @@ public class ConnectionManagerImpl implements ConnectionManager {
         clientMap = new HashMap<>();
     }
 
-    private SerializerProperties getSerializerProperties(ServerInfo serverInfo){
+    private SerializerProperties getSerializerProperties(ServerInfo serverInfo) {
         // 给个默认值，会从serverInfo中覆盖
         SerializerProperties serializerProperties = new SerializerProperties("jdk");
         serializerProperties.clone(serverInfo.getMetaData());

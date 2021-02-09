@@ -54,7 +54,7 @@ public class SimpleClient implements Client {
 
     private final Serializer serializer;
 
-    public SimpleClient(String ip, int port){
+    public SimpleClient(String ip, int port) {
         this(ip, port, new SerializerProperties("jdk"));
     }
 

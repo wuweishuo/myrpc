@@ -24,10 +24,10 @@ public abstract class AbstractRegistryServiceFactory<T extends RegistryService> 
     public RegistryService connect(RegistryProperties properties) throws Exception {
         String url = properties.getUrl();
         RegistryService registryService = instances.get(url);
-        if(registryService == null){
-            synchronized (this){
+        if (registryService == null) {
+            synchronized (this) {
                 registryService = instances.get(url);
-                if(registryService == null){
+                if (registryService == null) {
                     registryService = getInstance(properties);
                     instances.put(url, registryService);
                 }

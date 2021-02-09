@@ -1,6 +1,5 @@
 package com.wws.myrpc;
 
-import com.wws.myrpc.client.cluster.ClusterProperties;
 import com.wws.myrpc.serialize.SerializerProperties;
 
 import java.util.Map;
@@ -18,7 +17,7 @@ public class RpcSerializerProperties {
 
     private Map<String, String> props;
 
-    public SerializerProperties toProperties(){
+    public SerializerProperties toProperties() {
         SerializerProperties properties = new SerializerProperties(name);
         properties.setProperties(props);
         return properties;

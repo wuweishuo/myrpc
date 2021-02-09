@@ -48,8 +48,8 @@ public class ExtensionLoader<T> {
         return load(name, classLoader, null);
     }
 
-    protected T load(String name, ClassLoader classLoader, SPIProperties properties){
-        if(propertiesClass != null && (properties == null || !propertiesClass.equals(properties.getClass()))){
+    protected T load(String name, ClassLoader classLoader, SPIProperties properties) {
+        if (propertiesClass != null && (properties == null || !propertiesClass.equals(properties.getClass()))) {
             throw new IllegalArgumentException("extension class(" + name + ") haven't properties!");
         }
         loadAllExtensionClass(classLoader);
@@ -81,7 +81,7 @@ public class ExtensionLoader<T> {
         }
         try {
             Class<?> clazz = Class.forName(className);
-            if(propertiesClass != null){
+            if (propertiesClass != null) {
                 Constructor<?> constructor = clazz.getConstructor(propertiesClass);
                 return (T) constructor.newInstance(properties);
             }

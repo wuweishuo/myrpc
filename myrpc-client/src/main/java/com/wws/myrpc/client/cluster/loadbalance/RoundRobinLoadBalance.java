@@ -27,25 +27,25 @@ public class RoundRobinLoadBalance extends AbstractLoadBalance {
     protected ServerInfo doSelect(List<ServerInfo> list) {
         String serverName = list.get(0).getName();
         Map<String, AtomicInteger> serverRoundRobin = roundRobinMap.computeIfAbsent(serverName, k -> new ConcurrentHashMap<>());
-        int max  = Integer.MIN_VALUE;
+        int max = Integer.MIN_VALUE;
         int total = 0;
         ServerInfo selected = null;
         for (ServerInfo serverInfo : list) {
             AtomicInteger weight = serverRoundRobin.computeIfAbsent(serverInfo.getUniqueKey(), k -> new AtomicInteger());
             weight.incrementAndGet();
-            if(weight.get() > max){
+            if (weight.get() > max) {
                 selected = serverInfo;
             }
             total++;
         }
-        if(selected != null){
+        if (selected != null) {
             AtomicInteger atomicInteger = serverRoundRobin.get(selected.getUniqueKey());
             atomicInteger.addAndGet(-total);
         }
-        if(list.size() != serverRoundRobin.size()) {
+        if (list.size() != serverRoundRobin.size()) {
             List<String> keys = list.stream().map(ServerInfo::getUniqueKey).collect(Collectors.toList());
             for (String key : serverRoundRobin.keySet()) {
-                if(!keys.contains(key)){
+                if (!keys.contains(key)) {
                     serverRoundRobin.remove(key);
                 }
             }

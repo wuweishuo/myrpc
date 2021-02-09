@@ -85,7 +85,7 @@ public class FailBackCluster extends AbstractCluster {
             this.retry = retry;
         }
 
-        private RetryTask increaseAndGet(){
+        private RetryTask increaseAndGet() {
             retry++;
             return this;
         }
@@ -98,12 +98,12 @@ public class FailBackCluster extends AbstractCluster {
                 serverInfo = doSelect(serverInfos, selected);
                 getClient(serverInfo).transport(method, returnType, args);
             } catch (Throwable throwable) {
-                if(serverInfo != null) {
+                if (serverInfo != null) {
                     logger.error("{} transport err:{}", serverInfo, throwable);
                     selected.add(serverInfo);
                 }
                 RetryTask retryTask = increaseAndGet();
-                if(retryTask.retry > retryTask.maxRetry){
+                if (retryTask.retry > retryTask.maxRetry) {
                     logger.error("{} retry err", this);
                     return;
                 }

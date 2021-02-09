@@ -39,15 +39,7 @@ public class ClassPathRpcClientScanner extends ClassPathBeanDefinitionScanner {
             String ip = (String) annotationAttributes.get("ip");
             Integer port = (Integer) annotationAttributes.get("port");
             String name = (String) annotationAttributes.get("name");
-            String clusterBean = (String) annotationAttributes.get("clusterBean");
-            String loadBalanceBean = (String) annotationAttributes.get("loadBalanceBean");
-            String serializerBean = (String) annotationAttributes.get("serializerBean");
-            String registryBean = (String) annotationAttributes.get("registryBean");
 
-            beanDefinition.getPropertyValues().add("clusterBean", clusterBean);
-            beanDefinition.getPropertyValues().add("loadBalanceBean", loadBalanceBean);
-            beanDefinition.getPropertyValues().add("serializerBean", serializerBean);
-            beanDefinition.getPropertyValues().add("registryBean", registryBean);
             beanDefinition.getPropertyValues().add("ip", ip);
             beanDefinition.getPropertyValues().add("port", port);
             beanDefinition.getPropertyValues().add("name", name);

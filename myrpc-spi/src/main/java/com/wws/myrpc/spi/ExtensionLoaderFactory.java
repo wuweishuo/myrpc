@@ -21,7 +21,7 @@ public class ExtensionLoaderFactory {
         return ExtensionLoader.getExtensionLoader(clazz).load(name, classLoader);
     }
 
-    public static <T> T load(Class<T> clazz, String name, SPIProperties properties){
+    public static <T> T load(Class<T> clazz, String name, SPIProperties properties) {
         return ExtensionLoader.getExtensionLoader(clazz).load(name, getClassLoader(), properties);
     }
 

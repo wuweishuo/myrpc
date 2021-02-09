@@ -24,6 +24,7 @@ public @interface SPI {
 
     /**
      * 配置类
+     *
      * @return
      */
     Class<? extends SPIProperties> properties() default SPIProperties.class;

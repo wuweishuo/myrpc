@@ -13,12 +13,4 @@ public @interface RpcClient {
 
     String name() default "";
 
-    String clusterBean() default "";
-
-    String loadBalanceBean() default "";
-
-    String serializerBean() default "";
-
-    String registryBean() default "";
-
 }

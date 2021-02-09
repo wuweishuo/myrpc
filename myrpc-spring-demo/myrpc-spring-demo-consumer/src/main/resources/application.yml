@@ -10,6 +10,10 @@ myrpc:
         name: random
       cluster:
         name: failOver
+    instances:
+      user-service:
+        loadBalance:
+          name: roundRobin
 
 server:
   port: 8080

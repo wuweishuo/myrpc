@@ -21,10 +21,10 @@ public class KryoSerializer extends AbstractSerializer {
 
     private final Pool<Kryo> kryoPool;
 
-    public KryoSerializer(SerializerProperties properties){
+    public KryoSerializer(SerializerProperties properties) {
         super(properties);
         kryoPool = new Pool<Kryo>(true, false, 8) {
-            protected Kryo create () {
+            protected Kryo create() {
                 Kryo kryo = new Kryo();
                 kryo.setRegistrationRequired(false);
                 return kryo;

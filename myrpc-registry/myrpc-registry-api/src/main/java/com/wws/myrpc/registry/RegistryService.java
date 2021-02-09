@@ -12,6 +12,7 @@ public interface RegistryService {
 
     /**
      * 断开注册中心连接
+     *
      * @throws Exception
      */
     void destroy() throws Exception;
